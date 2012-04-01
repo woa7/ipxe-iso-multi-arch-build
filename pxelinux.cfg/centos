@@ -1,0 +1,57 @@
+# CentOS submenu
+MENU BEGIN centos
+MENU LABEL CentOS
+
+# CentOS 5
+LABEL centos5
+MENU HIDE
+KERNEL 64bit/centos5/vmlinuz
+APPEND nodhcp initrd=64bit/centos5/initrd.img method=http://ftp.upjs.sk/pub/centos/5/os/x86_64
+
+LABEL icentos5
+MENU HIDE
+KERNEL 32bit/centos5/vmlinuz
+APPEND nodhcp initrd=32bit/centos5/initrd.img method=http://ftp.upjs.sk/pub/centos/5/os/i386
+
+LABEL kscentos5
+MENU HIDE
+KERNEL 64bit/centos5/vmlinuz
+APPEND nodhcp initrd=64bit/centos5/initrd.img method=http://ftp.upjs.sk/pub/centos/5/os/x86_64 ks=http://www.salstar.sk/ks/centos5
+
+LABEL ikscentos5
+MENU HIDE
+KERNEL 32bit/centos5/vmlinuz
+APPEND nodhcp initrd=32bit/centos5/initrd.img method=http://ftp.upjs.sk/pub/centos/5/os/i386 ks=http://www.salstar.sk/ks/centos5
+
+# CentOS 6
+LABEL centos6
+MENU LABEL 64bit CentOS 6
+KERNEL 64bit/centos6/vmlinuz
+APPEND nodhcp initrd=64bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/x86_64
+
+LABEL icentos6
+MENU LABEL 32bit CentOS 6
+KERNEL 32bit/centos6/vmlinuz
+APPEND nodhcp initrd=32bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/i386
+
+LABEL vnccentos
+MENU LABEL 64bit CentOS 6, VNC install
+KERNEL 64bit/centos6/vmlinuz
+APPEND nodhcp initrd=64bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/x86_64 ksdevice=link ks=http://www.salstar.sk/ks/centos6 vnc vncconnect=158.197.240.41:5500 console=ttyS1
+
+LABEL kscentos6
+MENU LABEL 64bit CentOS 6 with kickstart
+KERNEL 64bit/centos6/vmlinuz
+APPEND nodhcp initrd=64bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/x86_64 ksdevice=bootif ks=http://www.salstar.sk/ks/centos6
+
+LABEL ikscentos6
+MENU LABEL 32bit CentOS 6 with kickstart
+KERNEL 32bit/centos6/vmlinuz
+APPEND nodhcp initrd=32bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/i386 ksdevice=bootif ks=http://www.salstar.sk/ks/icentos6
+
+LABEL centos-auto
+MENU HIDE
+KERNEL 64bit/centos6/vmlinuz
+APPEND nodhcp initrd=64bit/centos6/initrd.img method=http://ftp.upjs.sk/pub/centos/6/os/x86_64 ksdevice=bootif ks=http://www.salstar.sk/ks/centos6 part=root=4,vg=vg1,swap=1,var=2
+
+MENU END
