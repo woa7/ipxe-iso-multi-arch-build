@@ -17,6 +17,11 @@ LABEL kvm
 KERNEL 64bit/current/vmlinuz
 APPEND nodhcp initrd=64bit/current/initrd.img ksdevice=bootif ks=http://www.salstar.sk/ks/auto part=root=8,swap=8,vg=kvm
 
+LABEL 4g
+MENU LABEL 4GB disk autoformat
+KERNEL 64bit/current/vmlinuz
+APPEND nodhcp initrd=64bit/current/initrd.img ks=http://www.salstar.sk/ks/auto part=root=3.5,swap=
+
 LABEL guest
 #MENU HIDE
 KERNEL 64bit/current/vmlinuz
