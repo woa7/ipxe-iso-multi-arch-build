@@ -1,0 +1,5 @@
+DEFAULT hdt.c32
+
+LABEL memtest
+KERNEL memtest/memtest
+APPEND -

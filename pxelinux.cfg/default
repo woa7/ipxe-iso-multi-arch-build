@@ -34,6 +34,12 @@ KERNEL pmagic/bzImage
 APPEND initrd=pmagic/initrd.img edd=off load_ramdisk=1 prompt_ramdisk=0 rw vga=normal loglevel=9 max_loop=256
 #APPEND initrd=pmagic/initrd.img edd=off noapic load_ramdisk=1 prompt_ramdisk=0 rw vga=791 loglevel=0 max_loop=256
 
+# iPXE
+LABEL ipxe
+MENU LABEL iPXE menu
+KERNEL ipxe/ipxe.lkrn
+APPEND -
+
 LABEL quit
 MENU LABEL Exit to command line
 MENU QUIT
