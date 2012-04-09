@@ -1,0 +1,26 @@
+#!ipxe
+
+:start
+dhcp || goto shell
+
+:boot
+set base https://www.salstar.sk/pxe/ipxe/
+chain ${base}${mac} ||
+chain ${base}${ip} ||
+chain ${base}script.ipxe ||
+echo Internal script failed!
+shell
+goto start
+
+:shell
+echo If you need to boot in specific vlan, type: goto vlan
+echo If you need to boot again, type: exit
+shell
+goto start
+
+:vlan
+echo -n Enter VLAN #: ${}
+read vlan
+vcreate --tag ${vlan} net0
+dhcp net0-${vlan}
+goto boot

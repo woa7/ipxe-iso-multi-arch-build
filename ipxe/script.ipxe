@@ -1,0 +1,215 @@
+#!ipxe
+
+set url https://www.salstar.sk/pxe/
+set mirror http://ftp.upjs.sk/pub
+#set url tftp://158.197.16.70/
+isset ${admin_ip} || set admin_ip 158.197.240.41
+isset ${bits} || set bits 64
+isset ${arch} || set arch x86_64
+set cls:hex 1b:5b:4a  # ANSI clear screen sequence - "^[[J"
+isset ${menu} && goto ${menu} ||
+
+isset ${ip} || dhcp || echo DHCP failed
+
+:main_menu
+clear version
+set space:hex 20:20
+menu SAL's iPXE MENU
+item --gap Default:
+item --key l local ${space} Boot local hdd [l]
+item --gap Linux systems:
+item --key f fedora ${space} Fedora ${arch} [f]
+item --key c centos ${space} CentOS ${arch} [c]
+item --key d freedos ${space} FreeDOS [d]
+item --gap Options:
+iseq ${menu} changebits && set default --default || set default --
+item --key a ${default} changebits ${space} Architecture: ${arch} (${bits}bit) [a]
+iseq ${menu} params_menu && set default --default || set default --
+item --key 0x09 ${default} params_menu ${space} Kernel parameters: ${params}
+item --gap Tools:
+item --key x pxelinux ${space} Chainload pxelinux menu [x]
+item --key h hdt ${space} Hardware detection tool [h]
+item --key p pmagic ${space} Parted Magic [p]
+item --key m memtest ${space} MemTest86+ [m]
+item --key s shell ${space} iPXE shell [s]
+isset ${menu} && set timeout 0 || set timeout 60000
+choose --timeout ${timeout} menu || goto local
+echo ${cls}
+goto ${menu}
+
+:local
+exit
+
+:pxelinux
+echo Loading pxelinux ...
+set 209:string pxelinux.cfg/default
+set 210:string ${url}
+chain ${url}pxelinux.0 || goto die
+
+:hdt
+set 209:string pxelinux.cfg/hdt
+set 210:string ${url}
+chain ${url}pxelinux.0 || goto die
+
+:pmagic
+initrd ${url}pmagic/initrd.img || goto die
+chain ${url}pmagic/bzImage edd=off load_ramdisk=1 prompt_ramdisk=0 rw vga=normal loglevel=9 max_loop=256 || goto die
+
+:memtest
+set 209:string pxelinux.cfg/memtest
+set 210:string ${url}
+chain ${url}pxelinux.0 || goto die
+chain ${url}memtest/memtest || goto die
+
+:shell
+echo Type "exit" to return to menu.
+shell
+goto main_menu
+
+:die
+echo Error occured, press any key ...
+prompt --timeout 60000
+exit
+
+:changebits
+iseq ${bits} 32 && set bits 64 || set bits 32
+iseq ${bits} 32 && set arch i386 || set arch x86_64
+goto main_menu
+
+:params_menu
+menu Kernel parameters
+item --gap Current: ${params}
+item --gap
+item --key x exit Return to main menu [x]
+item --key s set Set parameters [s]
+item --key v vnc VNC installation [v]
+item --key 0 ttyS0 Serial console ttyS0 [0]
+item --key 1 ttyS1 Serial cosnole ttyS1 [1]
+choose kp || goto main_menu
+echo ${cls}
+goto params_${kp}
+
+# Kernel parameters
+:params_set
+echo -n Enter parameters: ${} && read params
+goto params_menu
+
+:params_vnc
+set params ${params} vnc vncconnect=${admin_ip}:5500
+goto params_menu
+
+:params_ttyS0
+set params ${params} console=ttyS0
+goto params_menu
+
+:params_ttyS1
+set params ${params} console=ttyS1
+goto params_menu
+
+:params_exit
+goto main_menu
+
+# OS
+:fedora
+set os Fedora
+menu Fedora
+item --key 6 16 ${os} 16 ${arch} [6]
+item --key 5 15 ${os} 15 ${arch} [5]
+item --key a 17-Alpha ${os} 17-Aplha ${arch} [a]
+item --key d development ${os} 17 (development) ${arch} [d]
+isset ${version} || choose version || goto main_menu
+echo ${cls}
+goto fedora_${version} ||
+set dir ${mirror}/fedora/linux/releases/${version}/${os}/${arch}/os
+:fedora_setvars
+set osks http://www.salstar.sk/ks/auto
+goto boottype
+
+:fedora_17-Alpha
+set dir ${mirror}/fedora/linux/releases/test/${version}/${os}/${arch}/os
+set params root=live:${dir}/LiveOS/squashfs.img ${params}
+goto fedora_setvars
+
+:fedora_development
+set dir ${mirror}/fedora/linux/development/17/${arch}/os
+set params root=live:${dir}/LiveOS/squashfs.img ${params}
+goto fedora_setvars
+
+:fedora_live
+set dir ${mirror}/fedora/linux/releases/${version}/Live/${arch}
+set img ${os}-${version}-${arch}-Live-Desktop.iso
+prompt
+exit
+
+:centos
+set os CentOS
+menu CentOS
+item --key 6 6 ${os} 6 ${arch} [6]
+item --key 5 5 ${os} 5 ${arch} [5]
+isset ${version} || choose version || goto main_menu
+echo ${cls}
+set dir ${mirror}/centos/${version}/os/${arch}
+set osks http://www.salstar.sk/ks/centos${version}
+goto boottype
+
+:boottype
+set ova ${os} ${version} ${arch}
+menu ${os} boot type
+item normal ${ova}
+item --key k ks ${ova} kickstart [k]
+item --key r rescue ${ova} rescue [r]
+item --key s remote ${ova} rescue with ssh [s]
+item --key a autopart ${ova} kickstart part=root=4 [a]
+item --key i isolinux ${ova} direct boot using isolinux [i]
+item --key l live_desktop ${ova} Live Desktop [l]
+item --key d live_kde ${ova} Live KDE [d]
+isset ${bt} || choose bt || goto main_menu
+echo ${cls}
+iseq ${bt} ks && set params ksdevice=bootif ks=${osks} ${params} ||
+iseq ${bt} rescue && set params rescue ${params} ||
+iseq ${bt} remote && set params ksdevice=bootif ks=http://www.salstar.sk/ks/rescue ${params} ||
+iseq ${bt} autopart && set params ksdevice=bootif ks=${osks} root=part=4 ${params} ||
+goto bootos_${bt} ||
+goto bootos_images
+
+:bootos_images
+echo Loading from ${dir}/isolinux/
+echo   method=${dir}
+echo   ${kickstart} ${rescue} ${params}
+#set next-server 158.197.16.70
+# load vmlinuz and initrd
+kernel ${dir}/isolinux/vmlinuz nodhcp method=${dir} ${params} || goto die
+initrd ${dir}/isolinux/initrd.img || goto die
+imgstat
+isset ${debug} && prompt ||
+boot
+exit
+
+:bootos_isolinux
+echo Loading isolinux from ${dir}/isolinux/
+set 209:string isolinux.cfg
+set 210:string ${dir}/isolinux/
+chain ${url}pxelinux.0 || goto die
+exit
+
+:bootos_live_desktop
+set img ${os}-${version}-${arch}-Live-Desktop.iso
+goto bootos_live
+
+:bootos_live_kde
+set img ${os}-${version}-${arch}-Live-KDE.iso
+goto bootos_live
+
+:bootos_live
+set dir ${mirror}/fedora/linux/releases/${version}/Live/${arch}
+set next-server 158.197.16.70
+set params ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${mac}
+echo params: ${params}
+echo WARNING: This does not really works!
+kernel ${url}memdisk iso raw ${params} || goto die
+initrd ${dir}/${img} || goto die
+boot
+exit
+
+:freedos
+chain dos.ipxe
