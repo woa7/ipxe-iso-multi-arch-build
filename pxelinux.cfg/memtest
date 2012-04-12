@@ -1,0 +1,5 @@
+DEFAULT memtest/memtest
+
+LABEL exit
+KERNEL ipxe/ipxe.lkrn
+APPEND -
