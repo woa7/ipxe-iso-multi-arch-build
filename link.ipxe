@@ -1,0 +1,33 @@
+#!ipxe
+
+:start
+dhcp || goto shell
+
+:boot
+set base https://www.salstar.sk/pxe/
+:boot_chain
+chain ${base}${mac} ||
+chain ${base}${ip} ||
+chain ${base}script.ipxe && exit ||
+echo Internal script failed! Failing to iPXE shell ...
+shell
+goto start
+
+:shell
+echo If you need to boot in specific vlan, type: goto vlan
+echo If you need to boot again, type: exit
+shell
+goto start
+
+:vlan
+echo -n Enter VLAN #: ${}
+read vlan
+vcreate --tag ${vlan} net0
+dhcp net0-${vlan}
+goto boot
+
+:tftp
+set next-server 158.197.16.70
+clear base
+echo Trying to boot from tftp server at ${next-server} ...
+goto boot_chain
