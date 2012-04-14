@@ -1,13 +1,13 @@
 DEFAULT hdt
 
 LABEL hdt
-KERNEL pxelinux.cfg/hdt_0_5_0.c32
+KERNEL hdt_0_5_0.c32
 APPEND -
 
 LABEL memtest
-KERNEL memtest/memtest
+KERNEL ../images/memtest
 APPEND -
 
 LABEL exit
-KERNEL ipxe/ipxe.lkrn
+KERNEL ../ipxe/ipxe.lkrn
 APPEND -
