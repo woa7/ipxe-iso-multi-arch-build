@@ -6,8 +6,8 @@ dhcp || goto shell
 :boot
 set base https://www.salstar.sk/pxe/
 :boot_chain
-chain ${base}${mac} ||
-chain ${base}${ip} ||
+chain ${base}by_mac/${mac} ||
+chain ${base}by_ip/${ip} ||
 chain ${base}script.ipxe && exit ||
 echo Internal script failed! Failing to iPXE shell ...
 shell
