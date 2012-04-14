@@ -15,20 +15,16 @@ CENTOS=$(shell cd $(FTP); \
 	)
 PMAGIC=$(shell cd $(FTP); find mirrors/pmagic -name bzImage -or -name initrd.img)
 FREEDOS=$(shell cd $(FTP); find mirrors/freedos -type f)
-IMAGES=$(shell cd ..; echo images/*)
 
 SOURCES=\
 	$(IPXE) \
-	images/modules.cgz \
 	memdisk \
 	pxelinux.0 \
-	memtest/memtest \
-	memtest/memtest86+-4.20.lkrn \
+	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
 	$(CENTOS) \
 	$(PMAGIC) \
 	$(FREEDOS) \
-	$(IMAGES)
 
 TARGETS=$(SOURCES:=.sig)
 
@@ -36,7 +32,10 @@ all:	$(TARGETS)
 
 clean:
 	rm -f $(TARGETS)
-	rm -rf images fedora centos mirrors memtest
+	rm -rf images fedora centos mirrors
+
+echo:
+	for i in $(SOURCES); do echo $$i; done
 
 %.ipxe.sig:	../%.ipxe
 	$(SIGN) -in $< -out $@
@@ -61,8 +60,4 @@ memdisk.sig:	../memdisk
 	$(SIGN) -in $< -out $@
 
 pxelinux.0.sig:	../pxelinux.0
-	$(SIGN) -in $< -out $@
-
-memtest/%.sig:	../memtest/%
-	@mkdir -p `dirname $@`
 	$(SIGN) -in $< -out $@
