@@ -5,10 +5,13 @@ dhcp || goto shell
 
 :boot
 set base https://www.salstar.sk/pxe/
+set base_ip https://158.197.16.66/pxe/
+
 :boot_chain
 chain ${base}by_mac/${mac} ||
 chain ${base}by_ip/${ip} ||
 chain ${base}script.ipxe && exit ||
+chain ${base_ip}script.ipxe && exit ||
 echo Internal script failed! Failing to iPXE shell ...
 shell
 goto start
