@@ -1,33 +1,44 @@
 #!ipxe
 
 :start
-dhcp || goto shell
+dhcp || goto link_menu
 
 :boot
-set base https://www.salstar.sk/pxe/
-set base_ip https://158.197.16.66/pxe/
+set base https://pxe.salstar.sk/
+set base_ip http://158.197.16.66/pxe/
 
 :boot_chain
 chain ${base}by_mac/${mac} ||
 chain ${base}by_ip/${ip} ||
 chain ${base}script.ipxe && exit ||
-chain ${base_ip}script.ipxe && exit ||
-echo Internal script failed! Failing to iPXE shell ...
-shell
-goto start
 
-:shell
-echo If you need to boot in specific vlan, type: goto vlan
-echo If you need to boot again, type: exit
-shell
-goto start
+:link_menu
+prompt --timeout 20000 Press any key to enter failsafe menu ... || exit
+menu Internal script failed!
+item --key l exit Boot local hdd [l]
+item --key v vlan Configure VLANs [v]
+item --key f boot_ip Fallback boot without DNS [f]
+item --key s shell Start iPXE shell [s]
+choose link_menu || exit
+goto link_${link_menu}
 
-:vlan
-echo -n Enter VLAN #: ${}
+:link_exit
+exit
+
+:link_vlan
+echo -n Enter VLAN number: ${}
 read vlan
 vcreate --tag ${vlan} net0
 dhcp net0-${vlan}
 goto boot
+
+:link_shell
+shell
+goto start
+
+:link_boot_ip
+chain ${base_ip}script.ipxe ||
+exit
 
 :tftp
 set next-server 158.197.16.70
