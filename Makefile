@@ -41,8 +41,10 @@ images/modules.cgz: images/pmagic/scripts/*
 		| cpio --quiet -H newc -o | gzip -9 \
 		> ../../$@
 
-test:	all
+boot:	all
 	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn $(PARAMS) $(NET) $(ARGS)
+
+test:	boot
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) $(PARAMS) $(ARGS)
