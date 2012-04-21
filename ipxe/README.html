@@ -1,5 +1,5 @@
 <pre>
-===========================================================
+=======================================================================
 
 To create a bootable floppy, type
     cat ipxe.dsk > /dev/fd0
@@ -14,6 +14,16 @@ the USB key.
 
 To create a bootable CD-ROM, burn the ISO image 
 ipxe.iso to a blank CD-ROM.
-
-===========================================================
+=======================================================================
+ISC DHCP daemon:
+        next-server 158.197.16.70;
+        filename "ipxe/ipxe.kpxe";
+=======================================================================
+dnsmasq.conf:
+	dhcp-boot=ipxe/ipxe.kpxe,ftp.upjs.sk,158.197.16.70
+/etc/config/dhcp:
+	# openwrt configuration file
+	config dnsmasq
+	  option dhcp-boot 'ipxe/ipxe.kpxe,ftp.upjs.sk,158.197.16.70'
+=======================================================================
 </pre>
