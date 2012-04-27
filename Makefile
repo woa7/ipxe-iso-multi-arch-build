@@ -1,8 +1,15 @@
 IPXEDIR=../../c/ipxe/src
-TARGETS=bin/ipxe.lkrn bin/ipxe.kpxe bin/ipxe.iso bin/ipxe.usb bin/undionly.kpxe
+TARGETS=\
+	bin/ipxe.lkrn\
+	bin/ipxe.kpxe\
+	bin/ipxe.iso\
+	bin/ipxe.usb\
+	bin/undionly.kpxe\
+	#bin/virtio-net.rom
 MEM=768
 NETMODEL=virtio
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
+#OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 PARAMS=-usb -usbdevice tablet -vga std
 SCRIPT=script.ipxe
 BOOTFILE=ipxe/ipxe.kpxe
@@ -42,9 +49,8 @@ images/modules.cgz: images/pmagic/scripts/*
 		> ../../$@
 
 boot:	all
-	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn $(PARAMS) $(NET) $(ARGS)
-
-test:	boot
+	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn \
+		$(PARAMS) $(OPTION_ROM) $(NET) $(ARGS)
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) $(PARAMS) $(ARGS)
