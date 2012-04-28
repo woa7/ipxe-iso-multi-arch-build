@@ -7,12 +7,13 @@ TARGETS=\
 	bin/undionly.kpxe\
 	#bin/virtio-net.rom
 MEM=768
+DISPLAY=sdl
 NETMODEL=virtio
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 PARAMS=-usb -usbdevice tablet -vga std
 SCRIPT=script.ipxe
-BOOTFILE=ipxe/ipxe.kpxe
+BOOTFILE=ipxe/undionly.kpxe
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell awk '/^set memtest_version / { print $$3 }' $(SCRIPT))
 C32S=hdt menu sysdump
@@ -50,10 +51,11 @@ images/modules.cgz: images/pmagic/scripts/*
 
 boot:	all
 	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn \
-		$(PARAMS) $(OPTION_ROM) $(NET) $(ARGS)
+		$(PARAMS) $(OPTION_ROM) $(NET) -display $(DISPLAY) $(ARGS)
 
 undi:	all
-	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) $(PARAMS) $(ARGS)
+	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) \
+		-display $(DISPLAY) $(PARAMS) $(ARGS)
 
 #freedos:
 #	zip /tmp/fd11live.img.zip fd11live.img
