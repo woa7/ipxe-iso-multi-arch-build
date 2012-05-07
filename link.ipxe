@@ -11,13 +11,14 @@ set base_ip http://158.197.16.66/pxe/
 :boot_chain
 chain ${base}by_mac/${mac} ||
 chain ${base}by_ip/${ip} ||
-chain ${base}script.ipxe && exit ||
+chain ${base}menu.ipxe && exit ||
 
 :link_menu
 prompt --timeout 20000 Press any key to enter failsafe menu ... || exit
 menu Internal script failed!
 item --key l exit Boot local hdd [l]
 item --key v vlan Configure VLANs [v]
+item --key c chain Chainload another iPXE [c]
 item --key r retry Retry [r]
 item --key f boot_ip Fallback boot without DNS [f]
 item --key s shell Start iPXE shell [s]
@@ -38,8 +39,13 @@ goto boot
 shell
 goto start
 
+:link_chain
+dhcp
+chain http://pxe.salstar.sk/ipxe/ipxe.lkrn && exit ||
+goto link_menu
+
 :link_boot_ip
-chain ${base_ip}script.ipxe ||
+chain ${base_ip}menu.ipxe ||
 exit
 
 :tftp
