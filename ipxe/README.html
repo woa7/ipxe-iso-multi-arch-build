@@ -1,6 +1,14 @@
 <pre>
 =======================================================================
 
+Files:
+<a href="ipxe.iso">ixpe.iso</a>	- bootable CD/DVD iso image
+<a href="ipxe.usb">ipxe.usb</a>	- bootable USB image
+<a href="ipxe.lkrn">ipxe.lkrn</a>	- load this kernel using GRUB/LILO/...
+*.[k]pxe	- load these using DHCP
+
+=======================================================================
+
 To create a bootable floppy, type
     cat ipxe.dsk > /dev/fd0
 where /dev/fd0 is your floppy drive.  This will erase any
@@ -14,16 +22,21 @@ the USB key.
 
 To create a bootable CD-ROM, burn the ISO image 
 ipxe.iso to a blank CD-ROM.
+
 =======================================================================
+
 ISC DHCP daemon:
         next-server 158.197.16.70;
         filename "ipxe/ipxe.kpxe";
+
 =======================================================================
+
 dnsmasq.conf:
 	dhcp-boot=ipxe/ipxe.kpxe,ftp.upjs.sk,158.197.16.70
 /etc/config/dhcp:
 	# openwrt configuration file
 	config dnsmasq
 	  option dhcp-boot 'ipxe/ipxe.kpxe,ftp.upjs.sk,158.197.16.70'
+
 =======================================================================
 </pre>
