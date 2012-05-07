@@ -2,7 +2,7 @@ SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inke
 
 FTP=/home/ftp/pub
 
-IPXE=$(shell cd ..; echo *.ipxe)
+IPXE=$(shell cd ..; find . -name '*.ipxe')
 FEDORA=$(shell cd $(FTP); \
 	echo fedora/linux/*/*/Fedora/*/os/isolinux/vmlinuz \
 	     fedora/linux/*/*/Fedora/*/os/isolinux/initrd.img \
@@ -13,8 +13,18 @@ CENTOS=$(shell cd $(FTP); \
 	echo centos/*/os/*/isolinux/vmlinuz \
              centos/*/os/*/isolinux/initrd.img \
 	)
+SCIENTIFIC=\
+	scientific/6x/x86_64/os/isolinux/vmlinuz \
+	scientific/6x/x86_64/os/isolinux/initrd.img \
+	scientific/6x/i386/os/isolinux/vmlinuz \
+	scientific/6x/i386/os/isolinux/initrd.img \
+	scientific/5x/x86_64/isolinux/vmlinuz \
+	scientific/5x/x86_64/isolinux/initrd.img \
+	scientific/5x/i386/isolinux/vmlinuz \
+	scientific/5x/i386/isolinux/initrd.img
 PMAGIC=$(shell cd $(FTP); find mirrors/pmagic -name bzImage -or -name initrd.img)
-FREEDOS=$(shell cd $(FTP); find mirrors/freedos -type f)
+CLONEZILLA=$(shell cd $(FTP); find mirrors/clonezilla -name vmlinuz -or -name initrd.img)
+FREEDOS=$(shell cd $(FTP); find mirrors/images -type f)
 
 SOURCES=\
 	$(IPXE) \
@@ -23,7 +33,9 @@ SOURCES=\
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
 	$(CENTOS) \
+	$(SCIENTIFIC) \
 	$(PMAGIC) \
+	$(CLONEZILLA) \
 	$(FREEDOS) \
 
 TARGETS=$(SOURCES:=.sig)
@@ -32,12 +44,16 @@ all:	$(TARGETS)
 
 clean:
 	rm -f $(TARGETS)
-	rm -rf images fedora centos mirrors
+	rm -rf images fedora centos mirrors bsd scientific
 
 echo:
 	for i in $(SOURCES); do echo $$i; done
 
 %.ipxe.sig:	../%.ipxe
+	$(SIGN) -in $< -out $@
+
+bsd/%.ipxe.sig:	../bsd/%.ipxe
+	mkdir -p bsd
 	$(SIGN) -in $< -out $@
 
 images/%.sig:	../images/%
@@ -51,6 +67,13 @@ fedora/%.sig:	$(FTP)/fedora/%
 centos/%.sig:	$(FTP)/centos/%
 	@mkdir -p `dirname $@`
 	$(SIGN) -in $< -out $@
+
+NOSIG=$(@:.sig=)
+scientific/%.sig:
+	@mkdir -p `dirname $@`
+	wget -O $(NOSIG) http://ftp.scientificlinux.org/linux/$(NOSIG)
+	$(SIGN) -in $(NOSIG) -out $@
+	rm -f $(NOSIG)
 
 mirrors/%.sig:	$(FTP)/mirrors/%
 	@mkdir -p `dirname $@`
