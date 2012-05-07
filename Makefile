@@ -7,15 +7,16 @@ TARGETS=\
 	bin/undionly.kpxe\
 	#bin/virtio-net.rom
 MEM=768
-DISPLAY=sdl
+OUT=sdl
+MONITOR=stdio
 NETMODEL=virtio
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
-PARAMS=-usb -usbdevice tablet -vga std
-SCRIPT=script.ipxe
+PARAMS=-usb -usbdevice tablet -vga cirrus
+MAIN_SCRIPT=menu.ipxe
 BOOTFILE=ipxe/undionly.kpxe
 UNAME=$(shell uname -r)
-MEMTEST_VERSION=$(shell awk '/^set memtest_version / { print $$3 }' $(SCRIPT))
+MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' $(MAIN_SCRIPT))
 C32S=hdt menu sysdump
 
 all:	rsync
@@ -50,12 +51,16 @@ images/modules.cgz: images/pmagic/scripts/*
 		> ../../$@
 
 boot:	all
-	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn \
-		$(PARAMS) $(OPTION_ROM) $(NET) -display $(DISPLAY) $(ARGS)
+	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn -monitor $(MONITOR) \
+		$(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
+	@echo ""
+
+textboot:
+	-make boot OUT=curses MONITOR=vc
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) \
-		-display $(DISPLAY) $(PARAMS) $(ARGS)
+		-display $(OUT) $(PARAMS) $(ARGS)
 
 #freedos:
 #	zip /tmp/fd11live.img.zip fd11live.img
