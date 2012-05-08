@@ -37,7 +37,7 @@ rsync:	images/modules.cgz compile sigs
 	cd kickstart; ./rsync
 
 compile:	syslinux
-	make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
+	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 		TRUST=`pwd`/certs/upjs.pem,`pwd`/certs/terena.pem \
 		$(TARGETS)
 	for i in $(TARGETS); do \
