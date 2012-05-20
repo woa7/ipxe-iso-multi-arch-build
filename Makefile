@@ -38,7 +38,7 @@ rsync:	images/modules.cgz compile sigs
 
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | tr '\n' ',')
 compile:	syslinux
-	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
+	-make -j1 -C $(IPXEDIR) NO_WERROR=1 EMBEDDED_IMAGE=`pwd`/link.ipxe \
 		TRUST=$(TRUST) $(TARGETS)
 	for i in $(TARGETS); do \
 		cp -a $(IPXEDIR)/$$i ipxe/; \
