@@ -17,16 +17,55 @@ chain ${base}menu.ipxe && exit ||
 prompt --timeout 20000 Press any key to enter failsafe menu ... || exit
 menu Internal script failed!
 item --key l exit Boot local hdd [l]
+item --key n network Manual network configuration [n]
 item --key v vlan Configure VLANs [v]
 item --key c chain Chainload another iPXE [c]
 item --key r retry Retry [r]
 item --key f boot_ip Fallback boot without DNS [f]
 item --key s shell Start iPXE shell [s]
-choose link_menu || exit
+choose --timeout 60000 link_menu || exit
 goto link_${link_menu}
 
 :link_exit
 exit
+
+:link_network
+echo Network configuration:
+echo -n Enter network card number [0 for net0, defaults to 0]: ${}
+read net
+isset ${net} || set net 0
+echo -n Enter IP address: ${}
+read net${net}/ip
+echo -n Enter netmask: ${}
+read mask
+iseq ${mask} 8 && set mask 255.0.0.0 ||
+iseq ${mask} 9 && set mask 255.128.0.0 ||
+iseq ${mask} 10 && set mask 255.192.0.0 ||
+iseq ${mask} 11 && set mask 255.224.0.0 ||
+iseq ${mask} 12 && set mask 255.240.0.0 ||
+iseq ${mask} 13 && set mask 255.248.0.0 ||
+iseq ${mask} 14 && set mask 255.252.0.0 ||
+iseq ${mask} 15 && set mask 255.254.0.0 ||
+iseq ${mask} 16 && set mask 255.255.0.0 ||
+iseq ${mask} 17 && set mask 255.255.128.0 ||
+iseq ${mask} 18 && set mask 255.255.192.0 ||
+iseq ${mask} 19 && set mask 255.255.224.0 ||
+iseq ${mask} 20 && set mask 255.255.240.0 ||
+iseq ${mask} 21 && set mask 255.255.248.0 ||
+iseq ${mask} 22 && set mask 255.255.252.0 ||
+iseq ${mask} 23 && set mask 255.255.254.0 ||
+iseq ${mask} 24 && set mask 255.255.255.0 ||
+iseq ${mask} 25 && set mask 255.255.255.128 ||
+iseq ${mask} 26 && set mask 255.255.255.192 ||
+iseq ${mask} 27 && set mask 255.255.255.224 ||
+iseq ${mask} 28 && set mask 255.255.255.240 ||
+iseq ${mask} 29 && set mask 255.255.255.248 ||
+set net${net}/netmask ${mask}
+echo -n Enter gateway: ${}
+read net${net}/gateway
+echo -n Enter DNS server: ${}
+read net${net}/dns
+goto boot
 
 :link_vlan
 echo -n Enter VLAN number: ${}
