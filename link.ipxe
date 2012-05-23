@@ -5,7 +5,7 @@
 dhcp || goto link_menu
 
 :boot
-set base https://pxe.salstar.sk/
+set base https://boot.salstar.sk/
 set base_ip http://158.197.16.66/pxe/
 
 :boot_chain
@@ -80,7 +80,7 @@ goto start
 
 :link_chain
 dhcp
-chain http://pxe.salstar.sk/ipxe/ipxe.lkrn && exit ||
+chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
 goto link_menu
 
 :link_boot_ip
