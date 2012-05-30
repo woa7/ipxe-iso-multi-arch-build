@@ -72,10 +72,10 @@ undi:	all
 pxelinux.cfg/pci.ids:	/usr/share/hwdata/pci.ids
 	cp -a $< $@
 
-pxelinux.cfg/modules.pcimap:	/lib/modules/$(UNAME)/modules.pcimap
+pxelinux.cfg/modules.pcimap:	/usr/lib/modules/$(UNAME)/modules.pcimap
 	cp -a $< $@
 
-pxelinux.cfg/modules.alias:	/lib/modules/$(UNAME)/modules.alias
+pxelinux.cfg/modules.alias:	/usr/lib/modules/$(UNAME)/modules.alias
 	cp -a $< $@
 
 pxelinux.cfg/pxelinux.0:	/usr/share/syslinux/pxelinux.0
@@ -87,7 +87,8 @@ pxelinux.cfg/%.c32:	/usr/share/syslinux/%.c32
 memdisk:	/usr/share/syslinux/memdisk
 	cp -a $< $@
 
-images/memtest:	/boot/memtest86+-$(MEMTEST_VERSION)
+images/memtest:	/boot/elf-memtest86+-$(MEMTEST_VERSION)
 	cp -a $< $@
+	touch $@
 
-syslinux:	memdisk images/memtest pxelinux.cfg/pci.ids pxelinux.cfg/modules.pcimap pxelinux.cfg/modules.alias pxelinux.cfg/pxelinux.0 $(C32S:%=pxelinux.cfg/%.c32)
+syslinux:	memdisk pxelinux.cfg/pci.ids pxelinux.cfg/modules.alias pxelinux.cfg/pxelinux.0 $(C32S:%=pxelinux.cfg/%.c32)
