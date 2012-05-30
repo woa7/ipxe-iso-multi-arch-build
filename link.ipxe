@@ -6,7 +6,7 @@ dhcp || goto link_menu
 
 :boot
 set base https://boot.salstar.sk/
-set base_ip http://158.197.16.66/pxe/
+set base_ip http://158.197.16.66/boot/
 
 :boot_chain
 chain ${base}by_mac/${mac} ||
