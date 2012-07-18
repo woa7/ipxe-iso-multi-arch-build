@@ -10,8 +10,11 @@ set base_ip http://158.197.16.66/boot/
 
 :boot_chain
 chain ${base}by_mac/${mac} ||
+imgfree
 chain ${base}by_ip/${ip} ||
+imgfree
 chain ${base}menu.ipxe && exit ||
+imgfree
 
 :link_menu
 prompt --timeout 20000 Press any key to enter failsafe menu ... || exit
