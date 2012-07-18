@@ -30,6 +30,7 @@ SOURCES=\
 	$(IPXE) \
 	memdisk \
 	pxelinux.0 \
+	memtest.0 \
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
 	$(CENTOS) \
@@ -82,5 +83,5 @@ mirrors/%.sig:	$(FTP)/mirrors/%
 memdisk.sig:	../memdisk
 	$(SIGN) -in $< -out $@
 
-pxelinux.0.sig:	../pxelinux.0
+%.0.sig:	../%.0
 	$(SIGN) -in $< -out $@
