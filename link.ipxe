@@ -1,6 +1,8 @@
 #!ipxe
 
 :start
+set boot_salstar_version 1
+
 :link_retry
 dhcp || goto link_menu
 
