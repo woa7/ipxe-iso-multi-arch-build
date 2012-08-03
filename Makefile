@@ -18,6 +18,9 @@ BOOTFILE=ipxe/undionly.kpxe
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' $(MAIN_SCRIPT))
 C32S=hdt menu sysdump
+NON_AUTO_SRCS=\
+	drivers/net/bnx2.c \
+	#drivers/net/prism2.c
 
 all:	rsync
 
@@ -39,7 +42,8 @@ rsync:	images/modules.cgz compile sigs
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | tr '\n' ',')
 compile:	syslinux
 	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
-		TRUST=$(TRUST) $(TARGETS) NO_WERROR=1
+		TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 \
+		NON_AUTO_SRCS=$(NON_AUTO_SRCS)
 	for i in $(TARGETS); do \
 		cp -a $(IPXEDIR)/$$i ipxe/; \
 	done
