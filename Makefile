@@ -12,7 +12,8 @@ MONITOR=stdio
 NETMODEL=virtio
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
-PARAMS=-usb -usbdevice tablet -vga cirrus
+USB=-usb -usbdevice tablet
+PARAMS=
 MAIN_SCRIPT=menu.ipxe
 BOOTFILE=ipxe/undionly.kpxe
 UNAME=$(shell uname -r)
@@ -56,7 +57,7 @@ images/modules.cgz: images/pmagic/scripts/*
 
 boot:	all
 	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn -monitor $(MONITOR) \
-		$(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
+		$(USB) $(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
 	@echo ""
 
 textboot:
@@ -64,7 +65,7 @@ textboot:
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) \
-		-display $(OUT) $(PARAMS) $(ARGS)
+		-display $(OUT) $(USB) $(PARAMS) $(ARGS)
 
 #freedos:
 #	zip /tmp/fd11live.img.zip fd11live.img
