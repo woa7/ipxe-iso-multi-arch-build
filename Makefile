@@ -35,10 +35,9 @@ sigs:
 
 rsync:	images/modules.cgz compile sigs
 	rsync -avPH --inplace --delete ./ ftp:public_html/boot/ \
-	  --exclude='**/.svn'
+	  --exclude='**/.svn' --exclude='**/rsync'
 	# to tftp server for dhcp boot
 	rsync -avPH --inplace ipxe/*pxe ftp:/var/lib/tftpboot/ipxe/
-	#cd kickstart; ./rsync
 
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | tr '\n' ',')
 compile:	syslinux
