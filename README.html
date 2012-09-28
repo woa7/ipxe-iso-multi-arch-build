@@ -39,4 +39,11 @@ dnsmasq.conf:
 	  option dhcp-boot 'ipxe/ipxe.kpxe,ftp.upjs.sk,158.197.16.70'
 
 =======================================================================
+
+Quick test using qemu-kvm:
+
+wget http://boot.salstar.sk/ipxe/ipxe.lkrn
+qemu-kvm -net user -net nic,model=virtio -kernel ipxe.lkrn -m 512
+
+=======================================================================
 </pre>
