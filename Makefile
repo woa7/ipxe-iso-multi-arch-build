@@ -43,10 +43,11 @@ TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | tr '\n' ',')
 compile:	syslinux
 	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 		TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 \
-		NON_AUTO_SRCS=$(NON_AUTO_SRCS)
+		NON_AUTO_SRCS=$(NON_AUTO_SRCS) $(IPXE_OPTS)
 	for i in $(TARGETS); do \
 		cp -a $(IPXEDIR)/$$i ipxe/; \
 	done
+	cp -a $(IPXEDIR)/config/local/*.h ipxe/
 
 images/modules.cgz: images/pmagic/scripts/*
 	cd images/pmagic; \
