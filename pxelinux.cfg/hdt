@@ -1,7 +1,7 @@
 DEFAULT hdt
 
 LABEL hdt
-KERNEL hdt_0_5_0.c32
+KERNEL hdt_0_5_2.c32
 APPEND -
 
 LABEL memtest
