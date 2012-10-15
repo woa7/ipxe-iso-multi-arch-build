@@ -6,22 +6,25 @@ TARGETS=\
 	bin/ipxe.usb\
 	bin/undionly.kpxe\
 	#bin/virtio-net.rom
-MEM=768
+MEM=1024
 OUT=sdl
 MONITOR=stdio
 NETMODEL=virtio
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 USB=-usb -usbdevice tablet
-PARAMS=
+PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTFILE=ipxe/undionly.kpxe
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' $(MAIN_SCRIPT))
 C32S=hdt menu sysdump
 NON_AUTO_SRCS=\
-	drivers/net/bnx2.c \
+	#drivers/net/bnx2.c \
 	#drivers/net/prism2.c
+IMGDIR=/opt/img/test
+DISKS="test.img"
+override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=virtio)
 
 all:	rsync
 
