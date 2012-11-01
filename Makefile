@@ -64,7 +64,10 @@ boot:	all
 	@echo ""
 
 textboot:
-	-make boot OUT=curses MONITOR=vc
+	+make boot OUT=curses MONITOR=vc
+
+wboot:
+	+make boot NET="$(NET) -net nic,vlan=1,model=e1000 -net user,vlan=1"
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) \
