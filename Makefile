@@ -98,8 +98,8 @@ pxelinux.cfg/%.c32:	/usr/share/syslinux/%.c32
 memdisk:	/usr/share/syslinux/memdisk
 	cp -a $< $@
 
-images/memtest:	/boot/elf-memtest86+-$(MEMTEST_VERSION)
-	cp -a $< $@
-	touch $@
+#images/memtest:	/boot/elf-memtest86+-$(MEMTEST_VERSION)
+#	cp -a $< $@
+#	touch $@
 
 syslinux:	memdisk pxelinux.cfg/pci.ids pxelinux.cfg/modules.alias pxelinux.cfg/pxelinux.0 $(C32S:%=pxelinux.cfg/%.c32)
