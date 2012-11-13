@@ -70,7 +70,7 @@ wboot:
 	+make boot NET="$(NET) -net nic,vlan=1,model=e1000 -net user,vlan=1"
 
 undi:	all
-	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) \
+	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
 		-display $(OUT) $(USB) $(PARAMS) $(ARGS)
 
 #freedos:
