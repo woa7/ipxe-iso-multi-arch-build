@@ -22,7 +22,7 @@ SCIENTIFIC=\
 	scientific/5x/x86_64/isolinux/initrd.img \
 	scientific/5x/i386/isolinux/vmlinuz \
 	scientific/5x/i386/isolinux/initrd.img
-PMAGIC=$(shell cd $(FTP); find mirrors/pmagic -name bzImage -or -name initrd.img)
+PMAGIC=$(shell cd $(FTP); find mirrors/pmagic -name bzImage\* -or -name initrd.img)
 CLONEZILLA=$(shell cd $(FTP); find mirrors/clonezilla -name vmlinuz -or -name initrd.img)
 FREEDOS=$(shell cd $(FTP); find mirrors/images -type f)
 
