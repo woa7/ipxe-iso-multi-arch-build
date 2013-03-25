@@ -26,6 +26,8 @@ item --key n network Manual network configuration [n]
 item --key v vlan Configure VLANs [v]
 item --key c chain Chainload another iPXE [c]
 item --key r retry Retry [r]
+item --key b reboot Reboot [b]
+item --key w reboot_warm Warm reboot [w]
 item --key f boot_ip Fallback boot without DNS [f]
 item --key s shell Start iPXE shell [s]
 choose --timeout 60000 link_menu || exit
@@ -86,6 +88,13 @@ goto start
 :link_chain
 dhcp
 chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
+goto link_menu
+
+:link_reboot_warm
+reboot --warm ||
+
+:link_reboot
+reboot ||
 goto link_menu
 
 :link_boot_ip
