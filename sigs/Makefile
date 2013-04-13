@@ -1,4 +1,4 @@
-SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inkey ~/sal/codesign/codesign.key -certfile ~/sal/codesign/ca.crt -outform DER
+SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inkey ~/sal/codesign/codesign.key -certfile ~/sal/codesign/cacert.pem -outform DER
 
 FTP=/home/ftp/pub
 
@@ -6,8 +6,6 @@ IPXE=$(shell cd ..; find . -name '*.ipxe')
 FEDORA=$(shell cd $(FTP); \
 	echo fedora/linux/*/*/Fedora/*/os/isolinux/vmlinuz \
 	     fedora/linux/*/*/Fedora/*/os/isolinux/initrd.img \
-	     fedora/linux/*/*/*/Fedora/*/os/isolinux/vmlinuz \
-	     fedora/linux/*/*/*/Fedora/*/os/isolinux/initrd.img \
 	)
 CENTOS=$(shell cd $(FTP); \
 	echo centos/*/os/*/isolinux/vmlinuz \
@@ -83,5 +81,8 @@ mirrors/%.sig:	$(FTP)/mirrors/%
 memdisk.sig:	../memdisk
 	$(SIGN) -in $< -out $@
 
-%.0.sig:	../%.0
+pxelinux.0.sig:	../pxelinux.0
+	$(SIGN) -in $< -out $@
+
+memtest.0.sig:	../images/memtest.0
 	$(SIGN) -in $< -out $@
