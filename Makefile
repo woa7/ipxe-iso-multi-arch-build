@@ -42,7 +42,7 @@ rsync:	images/modules.cgz compile sigs
 	# to tftp server for dhcp boot
 	rsync -avPH --inplace ipxe/*pxe ftp:/var/lib/tftpboot/ipxe/
 
-TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | tr '\n' ',')
+TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
 compile:	syslinux
 	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 		TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 \
