@@ -3,13 +3,15 @@ SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inke
 FTP=/home/ftp/pub
 
 IPXE=$(shell cd ..; find . -name '*.ipxe')
-FEDORA=$(shell cd $(FTP); \
-	echo fedora/linux/*/*/Fedora/*/os/isolinux/vmlinuz \
-	     fedora/linux/*/*/Fedora/*/os/isolinux/initrd.img \
+FEDORA=$(shell cd $(FTP); ls -1 \
+	  fedora/linux/releases/*/Fedora/*/os/isolinux/vmlinuz \
+	  fedora/linux/releases/*/Fedora/*/os/isolinux/initrd.img \
+	  fedora/linux/releases/test/*/Fedora/*/os/isolinux/vmlinuz \
+	  fedora/linux/releases/test/*/Fedora/*/os/isolinux/initrd.img \
 	)
-CENTOS=$(shell cd $(FTP); \
-	echo centos/*/os/*/isolinux/vmlinuz \
-             centos/*/os/*/isolinux/initrd.img \
+CENTOS=$(shell cd $(FTP); ls -1 \
+	  centos/*/os/*/isolinux/vmlinuz \
+          centos/*/os/*/isolinux/initrd.img \
 	)
 SCIENTIFIC=\
 	scientific/6x/x86_64/os/isolinux/vmlinuz \
