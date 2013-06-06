@@ -2,7 +2,7 @@ SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inke
 
 FTP=/home/ftp/pub
 
-IPXE=$(shell cd ..; find . -name '*.ipxe')
+IPXE=$(shell cd ..; find . -name '*.ipxe' -and ! -path '*/examples/*')
 FEDORA=$(shell cd $(FTP); ls -1 \
 	  fedora/linux/releases/*/Fedora/*/os/isolinux/vmlinuz \
 	  fedora/linux/releases/*/Fedora/*/os/isolinux/initrd.img \
