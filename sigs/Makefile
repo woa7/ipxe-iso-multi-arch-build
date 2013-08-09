@@ -88,3 +88,7 @@ pxelinux.0.sig:	../pxelinux.0
 
 memtest.0.sig:	../images/memtest.0
 	$(SIGN) -in $< -out $@
+
+pciids/%.ipxe.sig:	../pciids/%.ipxe
+	mkdir -p pciids
+	$(SIGN) -in $< -out $@
