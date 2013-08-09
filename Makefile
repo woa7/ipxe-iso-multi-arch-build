@@ -26,7 +26,7 @@ IMGDIR=/opt/img/test
 DISKS="test.img"
 override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=virtio)
 
-all:	rsync
+all:	rsync pciids.ipxe
 
 .PHONY:	all clean sigs rsync compile syslinux
 
@@ -79,6 +79,32 @@ undi:	all
 #		mirror@ftp:/home/ftp/pub/mirrors/freedos/1.1/
 #	gzip -c1 fd11live.img | ssh mirror@ftp \
 #		dd of=/home/ftp/pub/mirrors/freedos/1.1/fd11live.img.gz
+
+#pciids:	/usr/share/hwdata/pci.ids Makefile
+#	awk ' \
+#	  /^[0-9a-f]{4}/ { \
+#	    vendor=substr($$1,1,4); \
+#	    printf "#!ipxe\nset ven/%s\n", $$0 > "pciids/" vendor ".ipxe"; \
+#	  } \
+#	  /^\t[0-9a-f]{4}/ { \
+#	    printf "set dev/%s%s\n", vendor, substr($$0, 2) > "pciids/" vendor ".ipxe" \
+#	  } \
+#	' $<
+
+pciids.ipxe:	/usr/share/hwdata/pci.ids Makefile
+	awk ' \
+	  BEGIN { \
+	    print "#!ipxe\ngoto $${vendor}$${device} || goto $${vendor} || exit" \
+	  } \
+	  /^[0-9a-f]{4}/ { \
+	    vendor=substr($$1,1,4); \
+	    printf ":%s\nset ven %s\nexit\n", vendor, substr($$0,7) \
+	  } \
+	  /^\t[0-9a-f]{4}/ { \
+	    printf ":%s%s\nset dev %s\ngoto %s\n", \
+	           vendor, substr($$0, 2, 4), substr($$0, 8), vendor \
+	  } \
+	' $< > $@
 
 pxelinux.cfg/pci.ids:	/usr/share/hwdata/pci.ids
 	cp -a $< $@
