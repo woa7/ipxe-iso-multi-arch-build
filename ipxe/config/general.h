@@ -25,6 +25,7 @@
 #define POWEROFF_CMD          /* Power off command */
 #define IMAGE_TRUST_CMD       /* Image trust management commands */
 #define PCI_CMD             /* PCI commands */
+#define PARAM_CMD             /* Form parameter commands */
 
 // error messages
 #define  ERRMSG_80211		/* All 802.11 error descriptions (~3.3kb) */
