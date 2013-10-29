@@ -26,6 +26,8 @@
 #define IMAGE_TRUST_CMD       /* Image trust management commands */
 #define PCI_CMD             /* PCI commands */
 #define PARAM_CMD             /* Form parameter commands */
+#define NEIGHBOUR_CMD         /* Neighbour management commands */
+#define PING_CMD              /* Ping command */
 
 // error messages
 #define  ERRMSG_80211		/* All 802.11 error descriptions (~3.3kb) */
