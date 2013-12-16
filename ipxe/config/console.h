@@ -6,3 +6,4 @@
 //#define       CONSOLE_SYSLOGS         /* Encrypted syslog console */
 //#define       CONSOLE_VMWARE          /* VMware logfile console */
 //#define       CONSOLE_DEBUGCON        /* Debug port console */
+#define       CONSOLE_VESAFB          /* VESA framebuffer console */
