@@ -10,6 +10,7 @@ MEM=1024
 OUT=sdl
 MONITOR=stdio
 NETMODEL=virtio
+WNETMODEL=e1000
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 USB=-usb -usbdevice tablet
@@ -24,7 +25,8 @@ NON_AUTO_SRCS=\
 	#drivers/net/prism2.c
 IMGDIR=/opt/img/test
 DISKS="test.img"
-override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=virtio)
+DISKDRV="virtio"
+override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=$(DISKDRV))
 
 all:	rsync pciids.ipxe
 
@@ -67,7 +69,7 @@ textboot:
 	+make boot OUT=curses MONITOR=vc
 
 wboot:
-	+make boot NET="$(NET) -net nic,vlan=1,model=e1000 -net user,vlan=1"
+	+make boot NET="$(NET) -net nic,vlan=1,model=$(WNETMODEL) -net user,vlan=1"
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
