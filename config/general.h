@@ -8,6 +8,8 @@
 #define       IMAGE_COMBOOT           /* SYSLINUX COMBOOT image support */
 //#define       IMAGE_EFI               /* EFI image support */
 #define       IMAGE_SDI               /* SDI image support */
+#define       IMAGE_PNM               /* PNM image support */
+#define       IMAGE_PNG               /* PNG image support */
 
 // protocols
 #define        DOWNLOAD_PROTO_HTTPS    /* Secure Hypertext Transfer Protocol */
