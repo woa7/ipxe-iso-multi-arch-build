@@ -31,6 +31,7 @@
 #define NEIGHBOUR_CMD         /* Neighbour management commands */
 #define PING_CMD              /* Ping command */
 #define CONSOLE_CMD           /* Console command */
+#define IPSTAT_CMD            /* IP statistics commands */
 
 // error messages
 #define  ERRMSG_80211		/* All 802.11 error descriptions (~3.3kb) */
