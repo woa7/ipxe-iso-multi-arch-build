@@ -1,4 +1,4 @@
-IPXEDIR=../../c/ipxe/src
+IPXEDIR=../other/ipxe/src
 TARGETS=\
 	bin/ipxe.lkrn\
 	bin/ipxe.kpxe\
