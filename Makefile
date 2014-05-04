@@ -52,7 +52,6 @@ compile:	syslinux
 	for i in $(TARGETS); do \
 		cp -a $(IPXEDIR)/$$i ipxe/; \
 	done
-	cp -a $(IPXEDIR)/config/local/*.h ipxe/config/
 
 images/modules.cgz: images/pmagic/scripts/*
 	cd images/pmagic; \
