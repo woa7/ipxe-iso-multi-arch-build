@@ -1,5 +1,5 @@
 //#define       CONSOLE_PCBIOS          /* Default BIOS console */
-//#define       CONSOLE_SERIAL          /* Serial port */
+#define       CONSOLE_SERIAL          /* Serial port */
 //#define       CONSOLE_DIRECT_VGA      /* Direct access to VGA card */
 //#define       CONSOLE_PC_KBD          /* Direct access to PC keyboard */
 //#define       CONSOLE_SYSLOG          /* Syslog console */
