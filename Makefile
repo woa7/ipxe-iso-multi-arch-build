@@ -16,7 +16,7 @@ NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
 USB=-usb -usbdevice tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
-BOOTFILE=ipxe/undionly.kpxe
+BOOTFILE=ipxe/com1/undionly.kpxe
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' $(MAIN_SCRIPT))
 C32S=hdt menu sysdump
@@ -39,14 +39,17 @@ rsync:	images/modules.cgz compile sigs
 	rsync -avPH --inplace --delete ./ ftp:public_html/boot/ \
 	  --exclude='**/.svn' --exclude='**/rsync'
 	# to tftp server for dhcp boot
-	rsync -avPH --inplace ipxe/*pxe ftp:/var/lib/tftpboot/ipxe/
+	rsync -avPH --inplace ipxe/*pxe ipxe/com* ftp:/var/lib/tftpboot/ipxe/
 
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
 compile:	syslinux
-	-make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
-		TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS)
-	for i in $(TARGETS); do \
-		cp -a $(IPXEDIR)/$$i ipxe/; \
+	for config in "" com1 com2; do \
+		make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
+			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
+			CONFIG=$$config; \
+		for i in $(TARGETS); do \
+			cp -a $(IPXEDIR)/$$i ipxe/$$config/; \
+		done; \
 	done
 
 images/modules.cgz: images/pmagic/scripts/*
@@ -56,7 +59,7 @@ images/modules.cgz: images/pmagic/scripts/*
 		> ../../$@
 
 boot:	all
-	qemu-kvm -m $(MEM) -kernel ipxe/ipxe.lkrn -monitor $(MONITOR) \
+	qemu-kvm -m $(MEM) -kernel ipxe/com1/ipxe.lkrn -monitor $(MONITOR) \
 		$(USB) $(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
 	@echo ""
 
