@@ -1,5 +1,5 @@
 //#define       CONSOLE_PCBIOS          /* Default BIOS console */
-#define       CONSOLE_SERIAL          /* Serial port */
+//#define       CONSOLE_SERIAL          /* Serial port */
 //#define       CONSOLE_DIRECT_VGA      /* Direct access to VGA card */
 //#define       CONSOLE_PC_KBD          /* Direct access to PC keyboard */
 //#define       CONSOLE_SYSLOG          /* Syslog console */
@@ -8,4 +8,5 @@
 //#define       CONSOLE_DEBUGCON        /* Debug port console */
 #define       CONSOLE_VESAFB          /* VESA framebuffer console */
 
-#include <config/local/serial.h>
+//#define COMCONSOLE COM2
+//#define COMSPEED 57600
