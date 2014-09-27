@@ -1,20 +1,22 @@
 // image types
-#define       IMAGE_NBI               /* NBI image support */
-#define       IMAGE_ELF               /* ELF image support */
-#define       IMAGE_MULTIBOOT         /* MultiBoot image support */
-#define       IMAGE_PXE               /* PXE image support */
-#define       IMAGE_SCRIPT            /* iPXE script image support */
-#define       IMAGE_BZIMAGE           /* Linux bzImage image support */
-#define       IMAGE_COMBOOT           /* SYSLINUX COMBOOT image support */
-//#define       IMAGE_EFI               /* EFI image support */
-#define       IMAGE_SDI               /* SDI image support */
-#define       IMAGE_PNM               /* PNM image support */
-#define       IMAGE_PNG               /* PNG image support */
+#define IMAGE_NBI               /* NBI image support */
+#define IMAGE_ELF               /* ELF image support */
+#define IMAGE_MULTIBOOT         /* MultiBoot image support */
+#define IMAGE_PXE               /* PXE image support */
+#define IMAGE_SCRIPT            /* iPXE script image support */
+#define IMAGE_BZIMAGE           /* Linux bzImage image support */
+#define IMAGE_COMBOOT           /* SYSLINUX COMBOOT image support */
+//#define IMAGE_EFI               /* EFI image support */
+#define IMAGE_SDI               /* SDI image support */
+#define IMAGE_PNM               /* PNM image support */
+#define IMAGE_PNG               /* PNG image support */
 
 // protocols
-#define        DOWNLOAD_PROTO_HTTPS    /* Secure Hypertext Transfer Protocol */
-#define        DOWNLOAD_PROTO_FTP      /* File Transfer Protocol */
-//#define        DOWNLOAD_PROTO_SLAM     /* Scalable Local Area Multicast */
+#define NET_PROTO_IPV4          /* IPv4 protocol */
+#define NET_PROTO_IPV6          /* IPv6 protocol */
+#define DOWNLOAD_PROTO_HTTPS    /* Secure Hypertext Transfer Protocol */
+#define DOWNLOAD_PROTO_FTP      /* File Transfer Protocol */
+//#define DOWNLOAD_PROTO_SLAM     /* Scalable Local Area Multicast */
 
 // commands
 #define NSLOOKUP_CMD          /* DNS resolving command */
