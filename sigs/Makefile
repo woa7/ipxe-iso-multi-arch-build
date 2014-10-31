@@ -14,6 +14,8 @@ CENTOS=$(shell cd $(FTP); ls -1 \
           centos/*/os/*/isolinux/initrd.img \
 	)
 SCIENTIFIC=\
+	scientific/7x/x86_64/os/isolinux/vmlinuz \
+	scientific/7x/x86_64/os/isolinux/initrd.img \
 	scientific/6x/x86_64/os/isolinux/vmlinuz \
 	scientific/6x/x86_64/os/isolinux/initrd.img \
 	scientific/6x/i386/os/isolinux/vmlinuz \
