@@ -35,7 +35,7 @@ clean:
 sigs:
 	+make -C sigs
 
-rsync:	images/modules.cgz compile sigs
+rsync:	images/modules.cgz sigs
 	rsync -avPH --inplace --delete ./ ftp:public_html/boot/ \
 	  --exclude='**/.svn' --exclude='**/rsync'
 	# to tftp server for dhcp boot
