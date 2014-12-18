@@ -4,8 +4,8 @@ FTP=/home/ftp/pub
 
 IPXE=$(shell cd ..; find . -name '*.ipxe' -and ! -path '*/examples/*')
 FEDORA=$(shell cd $(FTP); ls -1 \
-	  fedora/linux/releases/*/Fedora/*/os/isolinux/vmlinuz \
-	  fedora/linux/releases/*/Fedora/*/os/isolinux/initrd.img \
+	  fedora/linux/releases/*/*/*/os/isolinux/vmlinuz \
+	  fedora/linux/releases/*/*/*/os/isolinux/initrd.img \
 	  fedora/linux/releases/test/*/*/*/os/isolinux/vmlinuz \
 	  fedora/linux/releases/test/*/*/*/os/isolinux/initrd.img \
 	)
