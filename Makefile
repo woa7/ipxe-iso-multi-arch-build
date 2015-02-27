@@ -6,12 +6,13 @@ TARGETS=\
 	bin/ipxe.usb\
 	bin/undionly.kpxe\
 	#bin/virtio-net.rom
+IPXECONFIGS="" com1 com2
 MEM=1024
-OUT=sdl
+OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
-NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2222-:22
+NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22
 #OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 USB=-usb -usbdevice tablet
 PARAMS:=
@@ -43,7 +44,7 @@ rsync:	images/modules.cgz sigs
 
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
 compile:	syslinux
-	for config in "" com1 com2; do \
+	for config in $(IPXECONFIGS); do \
 		make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
 			CONFIG=$$config; \
