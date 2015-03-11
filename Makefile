@@ -4,8 +4,7 @@ TARGETS=\
 	bin/ipxe.kpxe\
 	bin/ipxe.iso\
 	bin/ipxe.usb\
-	bin/undionly.kpxe\
-	#bin/virtio-net.rom
+	bin/undionly.kpxe
 IPXECONFIGS="" com1 com2
 MEM=1024
 OUT=gtk
