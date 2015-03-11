@@ -3,6 +3,7 @@ SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inke
 FTP=/home/ftp/pub
 
 IPXE=$(shell cd ..; find . -name '*.ipxe' -and ! -path '*/examples/*')
+IPXEBIN=ipxe/ipxe.lkrn ipxe/com1/ipxe.lkrn ipxe/com2/ipxe.lkrn
 FEDORA=$(shell cd $(FTP); ls -1 \
 	  fedora/linux/releases/*/*/*/os/isolinux/vmlinuz \
 	  fedora/linux/releases/*/*/*/os/isolinux/initrd.img \
@@ -29,7 +30,7 @@ CLONEZILLA=$(shell cd $(FTP); find mirrors/clonezilla -name vmlinuz -or -name in
 FREEDOS=$(shell cd $(FTP); find mirrors/images -type f)
 
 SOURCES=\
-	$(IPXE) \
+	$(IPXE) $(IPXEBIN) \
 	memdisk \
 	pxelinux.0 \
 	memtest.0 \
@@ -53,6 +54,9 @@ echo:
 	for i in $(SOURCES); do echo $$i; done
 
 %.ipxe.sig:	../%.ipxe
+	$(SIGN) -in $< -out $@
+
+ipxe/%.sig:	../ipxe/%
 	$(SIGN) -in $< -out $@
 
 bsd/%.ipxe.sig:	../bsd/%.ipxe
