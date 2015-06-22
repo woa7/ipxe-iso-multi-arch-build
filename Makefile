@@ -37,7 +37,7 @@ sigs:
 
 rsync:	images/modules.cgz sigs
 	rsync -avPH --inplace --delete ./ ftp:public_html/boot/ \
-	  --exclude='**/.svn' --exclude='**/rsync'
+	  --exclude='**/.git' --exclude='**/rsync'
 	# to tftp server for dhcp boot
 	rsync -avPH --inplace ipxe/*pxe ipxe/com* ftp:/var/lib/tftpboot/ipxe/
 
@@ -54,7 +54,7 @@ compile:	syslinux
 
 images/modules.cgz: images/pmagic/scripts/*
 	cd images/pmagic; \
-	find scripts modules | grep -v '/\.svn' \
+	find scripts modules | grep -v '/\.git' \
 		| cpio --quiet -H newc -o | gzip -9 \
 		> ../../$@
 
