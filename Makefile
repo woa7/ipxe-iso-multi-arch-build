@@ -16,6 +16,7 @@ NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22
 USB=-usb -usbdevice tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
+BOOTCONFIG=com1
 BOOTFILE=ipxe/com1/undionly.kpxe
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' $(MAIN_SCRIPT))
@@ -59,7 +60,8 @@ images/modules.cgz: images/pmagic/scripts/*
 		> ../../$@
 
 boot:	all
-	qemu-kvm -m $(MEM) -kernel ipxe/com1/ipxe.lkrn -monitor $(MONITOR) \
+	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+		-monitor $(MONITOR) \
 		$(USB) $(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
 	@echo ""
 
