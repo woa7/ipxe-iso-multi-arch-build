@@ -12,7 +12,6 @@ MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22
-#OPTION_ROM=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 USB=-usb -usbdevice tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
@@ -25,6 +24,7 @@ IMGDIR=/opt/img/test
 DISKS="test.img"
 DISKDRV="virtio"
 override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=$(DISKDRV))
+#override PARAMS+=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 
 all:	rsync pciids.ipxe
 
@@ -61,8 +61,10 @@ images/modules.cgz: images/pmagic/scripts/*
 
 boot:	all
 	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
-		-monitor $(MONITOR) \
-		$(USB) $(PARAMS) $(OPTION_ROM) $(NET) -display $(OUT) $(ARGS)
+		-monitor $(MONITOR) $(USB) -display $(OUT) \
+		$(NET) \
+		$(PARAMS) \
+		$(ARGS)
 	@echo ""
 
 textboot:
