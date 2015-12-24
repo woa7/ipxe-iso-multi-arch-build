@@ -14,6 +14,9 @@ CENTOS=$(shell cd $(FTP); ls -1 \
 	  centos/*/os/*/isolinux/vmlinuz \
           centos/*/os/*/isolinux/initrd.img \
 	)
+CENTOS_i386=\
+	centos/7/os/i386/isolinux/vmlinuz \
+	centos/7/os/i386/isolinux/initrd.img
 SCIENTIFIC=\
 	scientific/7x/x86_64/os/isolinux/vmlinuz \
 	scientific/7x/x86_64/os/isolinux/initrd.img \
@@ -36,7 +39,7 @@ SOURCES=\
 	memtest.0 \
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
-	$(CENTOS) \
+	$(CENTOS) $(CENTOS_i386) \
 	$(SCIENTIFIC) \
 	$(PMAGIC) \
 	$(CLONEZILLA) \
@@ -76,6 +79,12 @@ centos/%.sig:	$(FTP)/centos/%
 	$(SIGN) -in $< -out $@
 
 NOSIG=$(@:.sig=)
+centos/7/os/i386/isolinux/%.sig:
+	@mkdir -p `dirname $@`
+	wget -O $(NOSIG) http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'`
+	$(SIGN) -in $(NOSIG) -out $@
+	rm -f $(NOSIG)
+
 scientific/%.sig:
 	@mkdir -p `dirname $@`
 	wget -O $(NOSIG) http://ftp.scientificlinux.org/linux/$(NOSIG)
