@@ -1,4 +1,4 @@
-IPXEDIR=../other/ipxe/src
+IPXEDIR=src
 TARGETS=\
 	bin/ipxe.lkrn\
 	bin/ipxe.kpxe\
@@ -38,7 +38,7 @@ sigs:
 
 rsync:	images/modules.cgz sigs
 	rsync -avPH --inplace --delete ./ ftp:public_html/boot/ \
-	  --exclude='**/.git' --exclude='**/rsync' \
+	  --exclude='**/.git' --exclude='**/rsync' --exclude='src/' \
 	  --exclude='.well-known'
 	# to tftp server for dhcp boot
 	rsync -avPH --inplace ipxe/*pxe ipxe/com* ftp:/var/lib/tftpboot/ipxe/
