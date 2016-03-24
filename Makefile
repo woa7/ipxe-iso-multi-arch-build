@@ -54,6 +54,11 @@ compile:	syslinux
 		done; \
 	done
 
+recompile:
+	(cd src; git-update-show; cd ..)
+	@make compile
+	@make
+
 images/modules.cgz: images/pmagic/scripts/*
 	cd images/pmagic; \
 	find scripts modules | grep -v '/\.git' \
