@@ -4,7 +4,7 @@
 set boot_salstar_version 1
 
 :link_retry
-dhcp || goto link_menu
+ifconf || goto link_menu
 
 :boot
 set base https://boot.salstar.sk/
@@ -78,7 +78,7 @@ goto boot
 echo -n Enter VLAN number: ${}
 read vlan
 vcreate --tag ${vlan} net0
-dhcp net0-${vlan}
+ifconf net0-${vlan}
 goto boot
 
 :link_shell
@@ -86,7 +86,7 @@ shell
 goto start
 
 :link_chain
-dhcp
+ifconf
 chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
 goto link_menu
 
