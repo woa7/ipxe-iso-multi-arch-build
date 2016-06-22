@@ -10,6 +10,9 @@ ifconf || goto link_menu
 set base https://boot.salstar.sk/
 set base_ip http://158.197.16.66/boot/
 
+# try to sync date
+ntp ntp.salstar.sk ||
+
 :boot_chain
 chain ${base}by_mac/${mac} ||
 imgfree
