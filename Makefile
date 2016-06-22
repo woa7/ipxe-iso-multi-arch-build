@@ -6,7 +6,7 @@ TARGETS=\
 	bin/ipxe.usb\
 	bin/undionly.kpxe
 IPXECONFIGS="" com1 com2
-MEM=1024
+MEM=2048
 OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
