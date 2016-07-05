@@ -46,9 +46,9 @@ rsync:	images/modules.cgz sigs
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
 compile:	syslinux
 	for config in $(IPXECONFIGS); do \
-		make -j1 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
+		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
-			CONFIG=$$config; \
+			CONFIG=$$config $(ARGS); \
 		for i in $(TARGETS); do \
 			cp -a $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
