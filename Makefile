@@ -4,7 +4,8 @@ TARGETS=\
 	bin/ipxe.kpxe\
 	bin/ipxe.iso\
 	bin/ipxe.usb\
-	bin/undionly.kpxe
+	bin/undionly.kpxe\
+	bin-x86_64-efi/ipxe.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
 OUT=gtk
