@@ -45,3 +45,6 @@
 
 // error messages
 #define  ERRMSG_80211		/* All 802.11 error descriptions (~3.3kb) */
+
+// The Tivoli VMM workaround causes KVM and some other hosts to crash.
+#undef TIVOLI_VMM_WORKAROUND
