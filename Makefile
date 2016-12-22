@@ -5,6 +5,7 @@ TARGETS=\
 	bin/ipxe.iso\
 	bin/ipxe.usb\
 	bin/undionly.kpxe\
+	bin/virtio-net.rom\
 	bin-x86_64-efi/ipxe.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
@@ -12,7 +13,7 @@ OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
-NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22
+NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22,ipv4
 USB=-usb -usbdevice tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
@@ -55,8 +56,10 @@ compile:	syslinux
 		done; \
 	done
 
-recompile:
-	(cd src; git-update-show; cd ..)
+updatesrc:
+	cd src; git-update-show
+
+recompile:	updatesrc
 	@make compile
 	@make
 
