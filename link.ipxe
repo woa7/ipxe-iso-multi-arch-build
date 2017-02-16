@@ -1,10 +1,13 @@
 #!ipxe
 
+echo "boot.salstar.sk - SAL's boot menu"
+
 :start
 set boot_salstar_version 1
 
 :link_retry
-ifconf || goto link_menu
+# try 2-times
+ifconf || ifconf || goto link_menu
 
 :boot
 set base https://boot.salstar.sk/
