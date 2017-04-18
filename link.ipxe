@@ -1,6 +1,8 @@
 #!ipxe
 
-echo "boot.salstar.sk - SAL's boot menu"
+echo
+echo boot.salstar.sk - SAL's boot menu
+echo
 
 :start
 set boot_salstar_version 1
