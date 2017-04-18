@@ -13,7 +13,7 @@ OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
-NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22,ipv4
+NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22
 USB=-usb -usbdevice tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
