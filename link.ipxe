@@ -34,6 +34,7 @@ item --key n network Manual network configuration [n]
 item --key v vlan Configure VLANs [v]
 item --key c chain Chainload another iPXE [c]
 item --key r retry Retry [r]
+item --key 4 retry4 Retry using IPv4 protocol only [4]
 item --key b reboot Reboot [b]
 item --key w reboot_warm Warm reboot [w]
 item --key f boot_ip Fallback boot without DNS [f]
@@ -80,6 +81,7 @@ echo -n Enter gateway: ${}
 read net${net}/gateway
 echo -n Enter DNS server: ${}
 read net${net}/dns
+ifopen net${net}
 goto boot
 
 :link_vlan
@@ -87,6 +89,10 @@ echo -n Enter VLAN number: ${}
 read vlan
 vcreate --tag ${vlan} net0
 ifconf net0-${vlan}
+goto boot
+
+:link_retry4
+ifconf --configurator dhcp || goto link_menu
 goto boot
 
 :link_shell
