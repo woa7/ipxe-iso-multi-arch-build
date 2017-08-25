@@ -15,6 +15,9 @@ ifconf || ifconf || goto link_menu
 set base https://boot.salstar.sk/
 set base_ip http://158.197.16.66/boot/
 
+# show address
+echo IP: ${ip}, netmask: ${netmask}, gateway: ${gateway}
+
 # try to sync date
 ntp ntp.salstar.sk ||
 
