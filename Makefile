@@ -15,7 +15,7 @@ NETMODEL=virtio
 WNETMODEL=e1000
 #NETOPTS=,ipv4
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22$(NETOPTS)
-USB=-usb -usbdevice tablet
+USB=-usb -device usb-tablet
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTCONFIG=com1
@@ -24,9 +24,10 @@ UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
 IMGDIR=/opt/img/test
-DISKS="test.img"
+DISKS=test.img
 DISKDRV="virtio"
-override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=none,if=$(DISKDRV))
+CACHE="none"
+override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=$(CACHE),if=$(DISKDRV))
 #override PARAMS+=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 
 all:	rsync pciids.ipxe
@@ -70,7 +71,10 @@ images/modules.cgz: images/pmagic/scripts/*
 		| cpio --quiet -H newc -o | gzip -9 \
 		> ../../$@
 
-boot:	all
+$(IMGDIR)/$(DISKS):
+	qemu-img create $@ 8G
+
+boot:	all $(IMGDIR)/$(DISKS)
 	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) \
@@ -83,6 +87,9 @@ textboot:
 
 wboot:
 	+make boot NET="$(NET) -net nic,vlan=1,model=$(WNETMODEL) -net user,vlan=1"
+
+rboot:
+	+make boot IMGDIR=/tmp CACHE=unsafe
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
