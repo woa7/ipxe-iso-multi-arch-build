@@ -27,6 +27,7 @@ IMGDIR=/opt/img/test
 DISKS=test.img
 DISKDRV="virtio"
 CACHE="none"
+DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
 override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=$(CACHE),if=$(DISKDRV))
 #override PARAMS+=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 
@@ -74,7 +75,7 @@ images/modules.cgz: images/pmagic/scripts/*
 $(IMGDIR)/$(DISKS):
 	qemu-img create $@ 8G
 
-boot:	all $(IMGDIR)/$(DISKS)
+boot:	all $(DISKS_FULL_PATH)
 	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) \
