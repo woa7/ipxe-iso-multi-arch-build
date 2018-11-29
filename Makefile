@@ -92,6 +92,9 @@ wboot:
 rboot:
 	+make boot IMGDIR=/tmp CACHE=unsafe
 
+raidboot:
+	+make boot DISKS="test1.img test2.img"
+
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
 		-display $(OUT) $(USB) $(PARAMS) $(ARGS)
