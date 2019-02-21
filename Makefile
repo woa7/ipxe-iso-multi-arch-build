@@ -24,11 +24,12 @@ UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
 IMGDIR=/opt/img/test
-DISKS=test.img
+#DISKS=$(IMGDIR)/test.img
+DISKS=/dev/vg_work/qemu_test1
 DISKDRV="virtio"
 CACHE="none"
-DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
-override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(IMGDIR)/$(disk),cache=$(CACHE),if=$(DISKDRV))
+#DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
+override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(disk),cache=$(CACHE),if=$(DISKDRV))
 #override PARAMS+=-option-rom $(IPXEDIR)/bin/virtio-net.rom
 
 all:	rsync pciids.ipxe
@@ -72,10 +73,10 @@ images/modules.cgz: images/pmagic/scripts/*
 		| cpio --quiet -H newc -o | gzip -9 \
 		> ../../$@
 
-$(IMGDIR)/$(DISKS):
-	qemu-img create $@ 8G
+#$(IMGDIR)/$(DISKS):
+#	qemu-img create $@ 8G
 
-boot:	all $(DISKS_FULL_PATH)
+boot:	all
 	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) \
@@ -89,11 +90,8 @@ textboot:
 wboot:
 	+make boot NET="$(NET) -net nic,vlan=1,model=$(WNETMODEL) -net user,vlan=1"
 
-rboot:
-	+make boot IMGDIR=/tmp CACHE=unsafe
-
 raidboot:
-	+make boot DISKS="test1.img test2.img"
+	+make boot DISKS="$(IMGDIR)/test1.img $(IMGDIR)/test2.img"
 
 undi:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
