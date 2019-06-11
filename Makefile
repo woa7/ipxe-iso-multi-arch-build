@@ -84,11 +84,19 @@ boot:	all
 		$(ARGS)
 	@echo ""
 
+onlyboot:
+	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+		-monitor $(MONITOR) $(USB) -display $(OUT) \
+		$(NET) \
+		$(PARAMS) \
+		$(ARGS)
+	@echo ""
+
 textboot:
 	+make boot OUT=curses MONITOR=vc
 
 wboot:
-	+make boot NET="$(NET) -net nic,vlan=1,model=$(WNETMODEL) -net user,vlan=1"
+	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
 
 raidboot:
 	+make boot DISKS="$(IMGDIR)/test1.img $(IMGDIR)/test2.img"
