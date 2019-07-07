@@ -1,0 +1,3 @@
+#undef COMCONSOLE
+#define COMCONSOLE      COM1
+//#define COMSPEED 57600
