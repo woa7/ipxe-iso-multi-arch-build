@@ -6,7 +6,8 @@ TARGETS=\
 	bin/ipxe.usb\
 	bin/undionly.kpxe\
 	bin/virtio-net.rom\
-	bin-x86_64-efi/ipxe.efi
+	bin-x86_64-efi/ipxe.efi\
+	bin-x86_64-efi/snponly.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
 OUT=gtk
@@ -47,7 +48,8 @@ rsync:	images/modules.cgz sigs
 	  --exclude='**/.git' --exclude='**/rsync' --exclude='src/' \
 	  --exclude='.well-known'
 	# to tftp server for dhcp boot
-	rsync -avPH --inplace ipxe/*pxe ipxe/com* ftp:/var/lib/tftpboot/ipxe/
+	rsync -avPH --inplace ipxe/*pxe ipxe/com* ipxe/*.efi \
+		ftp:/var/lib/tftpboot/ipxe/
 
 TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
 compile:	syslinux
