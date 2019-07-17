@@ -58,7 +58,7 @@ compile:	syslinux
 			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
 			CONFIG=$$config $(ARGS); \
 		for i in $(TARGETS); do \
-			cp -a $(IPXEDIR)/$$i ipxe/$$config/; \
+			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
 	done
 
