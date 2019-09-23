@@ -13,6 +13,8 @@ FEDORA=$(shell cd $(FTP); ls -1 \
 CENTOS=$(shell cd $(FTP); ls -1 \
 	  centos/*/os/*/isolinux/vmlinuz \
           centos/*/os/*/isolinux/initrd.img \
+          centos/*/BaseOS/*/os/isolinux/vmlinuz \
+          centos/*/BaseOS/*/os/isolinux/initrd.img \
 	)
 CENTOS_i386=\
 	centos/7/os/i386/isolinux/vmlinuz \
