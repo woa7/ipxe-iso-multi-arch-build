@@ -10,6 +10,7 @@ TARGETS=\
 	bin-x86_64-efi/snponly.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
+CPU=-smp 2
 OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
@@ -79,7 +80,7 @@ images/modules.cgz: images/pmagic/scripts/*
 #	qemu-img create $@ 8G
 
 boot:	all
-	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) \
 		$(PARAMS) \
@@ -87,7 +88,7 @@ boot:	all
 	@echo ""
 
 onlyboot:
-	qemu-kvm -m $(MEM) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) \
 		$(PARAMS) \
