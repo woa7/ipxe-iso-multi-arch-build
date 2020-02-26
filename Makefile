@@ -18,6 +18,7 @@ WNETMODEL=e1000
 #NETOPTS=,ipv4
 NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22$(NETOPTS)
 USB=-usb -device usb-tablet
+RNG=-object rng-random,id=rng0,filename=/dev/urandom -device virtio-rng-pci,rng=rng0,id=rng0
 PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTCONFIG=com1
@@ -82,7 +83,7 @@ images/modules.cgz: images/pmagic/scripts/*
 boot:	all
 	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
-		$(NET) \
+		$(NET) $(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
@@ -90,7 +91,7 @@ boot:	all
 onlyboot:
 	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
-		$(NET) \
+		$(NET) $(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
