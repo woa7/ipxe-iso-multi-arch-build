@@ -23,12 +23,13 @@ PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTCONFIG=com1
 BOOTFILE=ipxe/com1/undionly.kpxe
+BOOTORDER=nc
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
 IMGDIR=/opt/img/test
 #DISKS=$(IMGDIR)/test.img
-DISKS=/dev/vg_work/qemu_test1
+DISKS=/dev/vg_work/qemu_test1,format=raw
 DISKDRV="virtio"
 CACHE="none"
 #DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
@@ -58,11 +59,15 @@ compile:	syslinux
 	for config in $(IPXECONFIGS); do \
 		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
-			CONFIG=$$config $(ARGS); \
+			CONFIG=$$config $(ARGS) \
+			EXTRA_CFLAGS="-fcommon -fno-pie"; \
 		for i in $(TARGETS); do \
 			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
 	done
+
+ipxe_clean:
+	+make -C $(IPXEDIR) clean distclean
 
 updatesrc:
 	cd src; git-update-show
@@ -81,7 +86,8 @@ images/modules.cgz: images/pmagic/scripts/*
 #	qemu-img create $@ 8G
 
 boot:	all
-	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+	qemu-kvm -m $(MEM) $(CPU) -boot $(BOOTORDER) \
+		-kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) $(RNG) \
 		$(PARAMS) \
