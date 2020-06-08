@@ -23,7 +23,7 @@ PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTCONFIG=com1
 BOOTFILE=ipxe/com1/undionly.kpxe
-BOOTORDER=nc
+BOOTORDER=c
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
@@ -58,9 +58,9 @@ TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr '
 compile:	syslinux
 	for config in $(IPXECONFIGS); do \
 		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
-			TRUST=$(TRUST) $(TARGETS) NO_WERROR=1 $(IPXE_OPTS) \
+			TRUST=$(TRUST) $(TARGETS) $(IPXE_OPTS) \
 			CONFIG=$$config $(ARGS) \
-			EXTRA_CFLAGS="-fcommon -fno-pie"; \
+			NO_WERROR=1 EXTRA_CFLAGS="-fcommon"; \
 		for i in $(TARGETS); do \
 			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
@@ -86,7 +86,7 @@ images/modules.cgz: images/pmagic/scripts/*
 #	qemu-img create $@ 8G
 
 boot:	all
-	qemu-kvm -m $(MEM) $(CPU) -boot $(BOOTORDER) \
+	qemu-kvm -m $(MEM) $(CPU) -boot once=$(BOOTORDER) \
 		-kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) $(USB) -display $(OUT) \
 		$(NET) $(RNG) \
