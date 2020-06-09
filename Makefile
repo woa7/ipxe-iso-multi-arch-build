@@ -23,7 +23,9 @@ PARAMS:=
 MAIN_SCRIPT=menu.ipxe
 BOOTCONFIG=com1
 BOOTFILE=ipxe/com1/undionly.kpxe
+BOOTFILE_EFI=ipxe/com1/ipxe.efi
 BOOTORDER=c
+EFI_BIOS=/usr/share/edk2/ovmf/OVMF_CODE.fd
 UNAME=$(shell uname -r)
 MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
@@ -88,16 +90,16 @@ images/modules.cgz: images/pmagic/scripts/*
 boot:	all
 	qemu-kvm -m $(MEM) $(CPU) -boot once=$(BOOTORDER) \
 		-kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
-		-monitor $(MONITOR) $(USB) -display $(OUT) \
-		$(NET) $(RNG) \
+		-monitor $(MONITOR) -display $(OUT) \
+		$(NET) $(USB) $(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
 
 onlyboot:
 	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
-		-monitor $(MONITOR) $(USB) -display $(OUT) \
-		$(NET) $(RNG) \
+		-monitor $(MONITOR) -display $(OUT) \
+		$(NET) $(USB) $(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
@@ -111,9 +113,14 @@ wboot:
 raidboot:
 	+make boot DISKS="$(IMGDIR)/test1.img $(IMGDIR)/test2.img"
 
-undi:	all
+undiboot:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
-		-display $(OUT) $(USB) $(PARAMS) $(ARGS)
+		-display $(OUT) $(USB) $(RNG) $(PARAMS) $(ARGS)
+
+efiboot:	all
+	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE_EFI) \
+		-boot n -bios $(EFI_BIOS) \
+		-display $(OUT) $(USB) $(RNG) $(PARAMS) $(ARGS)
 
 #freedos:
 #	zip /tmp/fd11live.img.zip fd11live.img
