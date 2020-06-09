@@ -1,7 +1,9 @@
 #!ipxe
 
+set esc:hex 1b
+set esc ${esc:string}
 echo
-echo boot.salstar.sk - SAL's boot menu
+echo ${esc}[1m${esc}[1;32mboot.salstar.sk${esc}[0m - ${esc}[1;31mSAL's ${esc}[1;34mboot menu${esc}0m
 echo
 
 :start
