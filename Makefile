@@ -62,7 +62,7 @@ compile:	syslinux
 		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
 			TRUST=$(TRUST) $(TARGETS) $(IPXE_OPTS) \
 			CONFIG=$$config $(ARGS) \
-			NO_WERROR=1 EXTRA_CFLAGS="-fcommon"; \
+			NO_WERROR=1; \
 		for i in $(TARGETS); do \
 			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
