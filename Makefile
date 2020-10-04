@@ -31,7 +31,9 @@ MEMTEST_VERSION=$(shell	awk '/^set memtest_version / { print $$3 }' tools.ipxe)
 C32S=hdt menu sysdump
 IMGDIR=/opt/img/test
 #DISKS=$(IMGDIR)/test.img
-DISKS=/dev/vg_work/qemu_test1,format=raw
+DISK1=/dev/vg_work/qemu_test1,format=raw
+DISK2=/dev/vg_work/qemu_test2,format=raw
+DISKS=$(DISK1)
 DISKDRV="virtio"
 CACHE="none"
 #DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
@@ -111,7 +113,7 @@ wboot:
 	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
 
 raidboot:
-	+make boot DISKS="$(IMGDIR)/test1.img $(IMGDIR)/test2.img"
+	+make boot DISKS="$(DISK1) $(DISK2)"
 
 undiboot:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE) -boot n \
