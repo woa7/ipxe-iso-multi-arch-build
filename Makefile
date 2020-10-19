@@ -112,6 +112,10 @@ textboot:
 wboot:
 	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
 
+ramboot:
+	qemu-img create /tmp/test1.img 10g
+	+make boot DISKS=/tmp/test1.img,format=raw CACHE=writeback
+
 raidboot:
 	+make boot DISKS="$(DISK1) $(DISK2)"
 
