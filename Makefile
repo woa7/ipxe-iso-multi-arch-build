@@ -8,6 +8,8 @@ TARGETS=\
 	bin/virtio-net.rom\
 	bin-x86_64-efi/ipxe.efi\
 	bin-x86_64-efi/snponly.efi
+ARM_TARGETS=\
+	bin-arm32-efi/snp.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
 CPU=-smp 2
@@ -65,9 +67,18 @@ compile:	syslinux
 			TRUST=$(TRUST) $(TARGETS) $(IPXE_OPTS) \
 			CONFIG=$$config $(ARGS) \
 			NO_WERROR=1; \
+		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
+			TRUST=$(TRUST) $(ARM_TARGETS) $(IPXE_OPTS) \
+			CROSS_COMPILE=arm-linux-gnu- ARCH=arm32 \
+			CONFIG=rpi $(ARGS) \
+			NO_WERROR=1; \
 		for i in $(TARGETS); do \
 			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
+		$(IPXEDIR)/util/genfsimg -p 256 -o ipxe/$$config/combined.iso \
+			$(IPXEDIR)/bin-x86_64-efi/ipxe.efi \
+			$(IPXEDIR)/bin-arm32-efi/snp.efi \
+			$(IPXEDIR)/bin/ipxe.lkrn; \
 	done
 
 ipxe_clean:
