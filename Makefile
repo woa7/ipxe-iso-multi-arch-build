@@ -2,7 +2,6 @@ IPXEDIR=src
 TARGETS=\
 	bin/ipxe.lkrn\
 	bin/ipxe.kpxe\
-	bin/ipxe.iso\
 	bin/ipxe.usb\
 	bin/undionly.kpxe\
 	bin/virtio-net.rom\
@@ -41,6 +40,7 @@ CACHE="none"
 #DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
 override PARAMS+=$(foreach disk,$(DISKS),-drive file=$(disk),cache=$(CACHE),if=$(DISKDRV))
 #override PARAMS+=-option-rom $(IPXEDIR)/bin/virtio-net.rom
+CA_TRUST=/usr/share/pki/ca-trust-source/ca-bundle.trust.p11-kit
 
 all:	rsync pciids.ipxe
 
@@ -60,7 +60,7 @@ rsync:	images/modules.cgz sigs
 	rsync -avPH --inplace ipxe/*pxe ipxe/com* ipxe/*.efi \
 		ftp:/var/lib/tftpboot/ipxe/
 
-TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo | tr ' ' ',')
+TRUST=$(shell find `pwd`/certs/ -name \*.crt -o -name \*.pem | xargs echo $(CA_TRUST) | tr ' ' ',')
 compile:	syslinux
 	for config in $(IPXECONFIGS); do \
 		make -j4 -C $(IPXEDIR) EMBEDDED_IMAGE=`pwd`/link.ipxe \
@@ -75,7 +75,9 @@ compile:	syslinux
 		for i in $(TARGETS); do \
 			cp -av $(IPXEDIR)/$$i ipxe/$$config/; \
 		done; \
-		$(IPXEDIR)/util/genfsimg -p 256 -o ipxe/$$config/combined.iso \
+		cp -av $(IPXEDIR)/bin-arm32-efi/snp.efi \
+			ipxe/$$config/arm32.efi; \
+		$(IPXEDIR)/util/genfsimg -o ipxe/$$config/ipxe.iso \
 			$(IPXEDIR)/bin-x86_64-efi/ipxe.efi \
 			$(IPXEDIR)/bin-arm32-efi/snp.efi \
 			$(IPXEDIR)/bin/ipxe.lkrn; \
@@ -138,6 +140,13 @@ efiboot:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE_EFI) \
 		-boot n -bios $(EFI_BIOS) \
 		-display $(OUT) $(USB) $(RNG) $(PARAMS) $(ARGS)
+
+armboot:	all
+	qemu-system-arm -M virt -m $(MEM) -device virtio-rng-pci \
+		-pflash images/arm32_efi/flash0.img \
+		-pflash images/arm32_efi/flash1.img \
+		-drive file=fat:rw:ipxe/,format=raw,media=disk \
+		-device virtio-net,netdev=n1 -netdev user,id=n1
 
 #freedos:
 #	zip /tmp/fd11live.img.zip fd11live.img
