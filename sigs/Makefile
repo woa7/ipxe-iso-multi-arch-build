@@ -7,6 +7,8 @@ IPXEBIN=ipxe/ipxe.lkrn ipxe/com1/ipxe.lkrn ipxe/com2/ipxe.lkrn
 FEDORA=$(shell cd $(FTP); ls -1 \
 	  fedora/linux/releases/*/*/*/os/isolinux/vmlinuz \
 	  fedora/linux/releases/*/*/*/os/isolinux/initrd.img \
+	  fedora/linux/releases/*/*/*/os/images/pxeboot/vmlinuz \
+	  fedora/linux/releases/*/*/*/os/images/pxeboot/initrd.img \
 	  fedora/linux/releases/test/*/*/*/os/isolinux/vmlinuz \
 	  fedora/linux/releases/test/*/*/*/os/isolinux/initrd.img \
 	)
