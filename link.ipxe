@@ -15,7 +15,7 @@ set boot_salstar_version 1
 
 :link_retry
 # try 2-times
-iflinkwait --timeout=60
+iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf || ifconf || goto link_menu
 
 :boot
@@ -98,12 +98,12 @@ goto boot
 echo -n Enter VLAN number: ${}
 read vlan
 vcreate --tag ${vlan} net0
-iflinkwait --timeout=60
+iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf net0-${vlan}
 goto boot
 
 :link_retry4
-iflinkwait --timeout=60
+iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf --configurator dhcp || goto link_menu
 goto boot
 
@@ -112,7 +112,7 @@ shell
 goto start
 
 :link_chain
-iflinkwait --timeout=60
+iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf
 chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
 goto link_menu
