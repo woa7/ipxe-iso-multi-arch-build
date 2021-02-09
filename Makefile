@@ -11,7 +11,7 @@ ARM_TARGETS=\
 	bin-arm32-efi/snp.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
-CPU=-smp 2
+CPU=-smp 2 -cpu SandyBridge-IBRS
 OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
@@ -120,7 +120,12 @@ onlyboot:
 	@echo ""
 
 textboot:
+	# ncurses mode
 	+make boot OUT=curses MONITOR=vc
+
+noneboot:
+	# no-graphics, monitor on stdio
+	+make boot OUT=none MONITOR=stdio
 
 wboot:
 	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
