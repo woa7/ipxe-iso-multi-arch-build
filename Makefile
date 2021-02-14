@@ -35,6 +35,7 @@ IMGDIR=/opt/img/test
 DISK1=/dev/vg_work/qemu_test1,format=raw
 DISK2=/dev/vg_work/qemu_test2,format=raw
 DISKS=$(DISK1)
+DISKTMP=/tmp/test1.img
 DISKDRV="virtio"
 CACHE="none"
 #DISKS_FULL_PATH+=$(foreach disk,$(DISKS), $(IMGDIR)/$(disk))
@@ -130,9 +131,11 @@ noneboot:
 wboot:
 	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
 
-ramboot:
-	qemu-img create /tmp/test1.img 10g
-	+make boot DISKS=/tmp/test1.img,format=raw CACHE=writeback
+$(DISKTMP):
+	qemu-img create $@ 10g
+
+ramboot:	$(DISKTMP)
+	+make boot DISKS=$(DISKTMP),format=raw CACHE=writeback
 
 raidboot:
 	+make boot DISKS="$(DISK1) $(DISK2)"
@@ -145,6 +148,9 @@ efiboot:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE_EFI) \
 		-boot n -bios $(EFI_BIOS) \
 		-display $(OUT) $(USB) $(RNG) $(PARAMS) $(ARGS)
+
+ramefiboot:	$(DISKTMP)
+	+make efiboot DISKS=$(DISKTMP),format=raw CACHE=writeback
 
 armboot:	all
 	qemu-system-arm -M virt -m $(MEM) -device virtio-rng-pci \
