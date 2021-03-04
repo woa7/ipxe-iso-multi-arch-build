@@ -124,9 +124,12 @@ textboot:
 	# ncurses mode
 	+make boot OUT=curses MONITOR=vc
 
-noneboot:
+stdioboot:
 	# no-graphics, monitor on stdio
-	+make boot OUT=none MONITOR=stdio
+	@echo "Use CTRL+A + C + ENTER to QEMU monitor."
+	+make boot OUT="none -nographic -serial mon:stdio" \
+		 MONITOR=vc BOOTCONFIG=""
+	reset # reset terminal
 
 wboot:
 	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
@@ -148,6 +151,10 @@ efiboot:	all
 	qemu-kvm -m $(MEM) $(NET),tftp=`pwd`,bootfile=$(BOOTFILE_EFI) \
 		-boot n -bios $(EFI_BIOS) \
 		-display $(OUT) $(USB) $(RNG) $(PARAMS) $(ARGS)
+
+efiboot2:	all
+	# efi boot with 2 disks for mirror
+	+make efiboot DISKS="$(DISK1) $(DISK2)"
 
 ramefiboot:	$(DISKTMP)
 	+make efiboot DISKS=$(DISKTMP),format=raw CACHE=writeback
