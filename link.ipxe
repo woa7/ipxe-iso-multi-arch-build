@@ -29,12 +29,13 @@ echo IP: ${ip}, netmask: ${netmask}, gateway: ${gateway}
 ntp ntp.salstar.sk ||
 
 :boot_chain
-chain ${base}by_mac/${mac} ||
-imgfree
-chain ${base}by_ip/${ip} ||
-imgfree
-chain ${base}menu.ipxe && exit ||
-imgfree
+# allow loading of custom script set via DHCP server
+# option site-local-128 code 128 = string;
+# option site-local-128 "http://host.domain/filename";
+isset ${128:string} && chain --autofree ${128:string} ||
+chain --autofree ${base}by_mac/${mac} ||
+chain --autofree ${base}by_ip/${ip} ||
+chain --autofree --replace ${base}menu.ipxe && exit ||
 
 :link_menu
 prompt --timeout 20000 Press any key to enter failsafe menu ... || exit
@@ -125,7 +126,7 @@ reboot ||
 goto link_menu
 
 :link_boot_ip
-chain ${base_ip}menu.ipxe ||
+chain --autofree --replace ${base_ip}menu.ipxe ||
 exit
 
 :tftp
