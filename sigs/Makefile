@@ -21,6 +21,9 @@ CENTOS=$(shell cd $(FTP); ls -1 \
 CENTOS_i386=\
 	centos/7/os/i386/isolinux/vmlinuz \
 	centos/7/os/i386/isolinux/initrd.img
+ALMALINUX=\
+	almalinux/8/BaseOS/x86_64/os/isolinux/vmlinuz \
+	almalinux/8/BaseOS/x86_64/os/isolinux/initrd.img
 SCIENTIFIC=\
 	scientific/7x/x86_64/os/isolinux/vmlinuz \
 	scientific/7x/x86_64/os/isolinux/initrd.img \
@@ -40,6 +43,7 @@ SOURCES=\
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
 	$(CENTOS) $(CENTOS_i386) \
+	$(ALMALINUX) \
 	$(SCIENTIFIC) \
 	$(PMAGIC) \
 	$(CLONEZILLA) \
@@ -81,15 +85,18 @@ centos/%.sig:	$(FTP)/centos/%
 NOSIG=$(@:.sig=)
 centos/7/os/i386/isolinux/%.sig:
 	@mkdir -p `dirname $@`
-	wget -O $(NOSIG) http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'`
-	$(SIGN) -in $(NOSIG) -out $@
-	rm -f $(NOSIG)
+	curl http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'` \
+	  | $(SIGN) -in - -out $@
+
+almalinux/%.sig:
+	@mkdir -p `dirname $@`
+	curl https://repo.almalinux.org/$(NOSIG) \
+	  | $(SIGN) -in - -out $@
 
 scientific/%.sig:
 	@mkdir -p `dirname $@`
-	wget -O $(NOSIG) http://ftp.scientificlinux.org/linux/$(NOSIG)
-	$(SIGN) -in $(NOSIG) -out $@
-	rm -f $(NOSIG)
+	curl http://ftp.scientificlinux.org/linux/$(NOSIG) \
+	  | $(SIGN) -in - -out $@
 
 mirrors/%.sig:	$(FTP)/mirrors/%
 	@mkdir -p `dirname $@`
