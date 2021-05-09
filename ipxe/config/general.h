@@ -42,6 +42,8 @@
 #define PROFSTAT_CMD          /* Profiling commands */
 #define NTP_CMD               /* NTP commands */
 #define CERT_CMD              /* Certificate management commands */
+//#define IMAGE_MEM_CMD         /* Read memory command */
+#define IMAGE_ARCHIVE_CMD     /* Archive image management commands */
 
 // error messages
 #define  ERRMSG_80211		/* All 802.11 error descriptions (~3.3kb) */
