@@ -24,6 +24,9 @@ CENTOS_i386=\
 ALMALINUX=\
 	almalinux/8/BaseOS/x86_64/os/isolinux/vmlinuz \
 	almalinux/8/BaseOS/x86_64/os/isolinux/initrd.img
+ROCKYLINUX=\
+	rocky/8.3/BaseOS/x86_64/os/isolinux/vmlinuz \
+	rocky/8.3/BaseOS/x86_64/os/isolinux/initrd.img
 SCIENTIFIC=\
 	scientific/7x/x86_64/os/isolinux/vmlinuz \
 	scientific/7x/x86_64/os/isolinux/initrd.img \
@@ -44,6 +47,7 @@ SOURCES=\
 	$(FEDORA) \
 	$(CENTOS) $(CENTOS_i386) \
 	$(ALMALINUX) \
+	$(ROCKYLINUX) \
 	$(SCIENTIFIC) \
 	$(PMAGIC) \
 	$(CLONEZILLA) \
@@ -91,6 +95,11 @@ centos/7/os/i386/isolinux/%.sig:
 almalinux/%.sig:
 	@mkdir -p `dirname $@`
 	curl https://repo.almalinux.org/$(NOSIG) \
+	  | $(SIGN) -in - -out $@
+
+rocky/%.sig:
+	@mkdir -p `dirname $@`
+	curl https://download.rockylinux.org/pub/$(NOSIG) \
 	  | $(SIGN) -in - -out $@
 
 scientific/%.sig:
