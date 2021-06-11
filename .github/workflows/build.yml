@@ -11,6 +11,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
+          repository: ipxe/ipxe
           fetch-depth: 0
       - name: Install packages
         run: |
