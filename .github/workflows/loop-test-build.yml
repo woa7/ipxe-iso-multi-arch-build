@@ -1,4 +1,4 @@
-name: Build
+name: loop-test-build
 
 on: push
 
@@ -21,7 +21,7 @@ jobs:
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind \
-                           gcc-arm-none-eabi gcc-aarch64-linux-gnu
+                           gcc-arm-none-eabi
       - name: Build (BIOS)
         run: |
           make -j 4 -C src
