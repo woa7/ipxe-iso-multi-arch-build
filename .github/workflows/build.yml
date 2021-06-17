@@ -21,8 +21,13 @@ jobs:
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ matrix.os }}-${{ matrix.type }}
       - name: Build (BIOS)
         run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src
       - name: Build (Everything)
         run: |
@@ -46,8 +51,13 @@ jobs:
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-arm-none-eabi
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ matrix.os }}-${{ matrix.type }}
       - name: Build
         run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src CROSS=arm-none-eabi- \
                bin-arm32-efi/intel.efi \
                bin-arm32-efi/intel.usb \
@@ -67,8 +77,13 @@ jobs:
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ matrix.os }}-${{ matrix.type }}
       - name: Build
         run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src CROSS=aarch64-linux-gnu- \
                bin-arm64-efi/ipxe.efi \
                bin-arm64-efi/ipxe.usb \
