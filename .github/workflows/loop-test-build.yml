@@ -103,6 +103,7 @@ jobs:
 ###
       - name: ssh
         if: ${{ failure() }}
+        continue-on-error: true
         uses: ryanchapman/gha-ssh@v1
       # after the container starts tmate in the background, it will
       # sleep for 24 hours, so it's important that you set a timeout here
@@ -121,5 +122,8 @@ jobs:
         # defaults to `false` if not set here
         # if debug is set, then tmate is started with `-vvv -F`
           debug: true
+      - name: foo run
+        run: |
+          echo foo
 ###
 
