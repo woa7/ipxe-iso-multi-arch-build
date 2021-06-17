@@ -91,6 +91,7 @@ jobs:
           bin/ipxe.lkrn || \
           ./util/genfsimg -o ipxe-any.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
       - name: list ISO (Everything)
+        continue-on-error: true
         run: |
           find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           isoinfo -d -i src/*.iso
@@ -102,7 +103,7 @@ jobs:
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
       - name: ssh
-        if: ${{ false }}
+        if: ${{ false() }}
         continue-on-error: false
         #if: ${{ failure() }}
         #if: ${{ true() }}
