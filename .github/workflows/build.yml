@@ -31,6 +31,7 @@ jobs:
           make -j 4 -C src
       - name: Build (Everything)
         run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src everything
       - name: Test
         run: |
