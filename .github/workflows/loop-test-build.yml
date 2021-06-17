@@ -102,8 +102,11 @@ jobs:
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
       - name: ssh
-        if: ${{ failure() }}
-        continue-on-error: true
+        if: ${{ false }}
+        continue-on-error: false
+        #if: ${{ failure() }}
+        #if: ${{ true() }}
+        #continue-on-error: true
         uses: ryanchapman/gha-ssh@v1
       # after the container starts tmate in the background, it will
       # sleep for 24 hours, so it's important that you set a timeout here
