@@ -89,11 +89,11 @@ jobs:
           bin-arm32-efi/ipxe.efi \
           bin-arm64-efi/ipxe.efi \
           bin/ipxe.lkrn || \
-          ./util/genfsimg -o ipxe-any.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
+          ./util/genfsimg -o ipxe-glob.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
       - name: list ISO (Everything)
         continue-on-error: true
         run: |
-          find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           isoinfo -d -i src/*.iso
           isoinfo -l -i src/*.iso
           7z l src/my.iso
