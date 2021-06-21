@@ -103,7 +103,7 @@ jobs:
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
       - name: ssh
-        if: ${{ false() }}
+        if: ${{ false }}
         continue-on-error: false
         #if: ${{ failure() }}
         #if: ${{ true() }}
