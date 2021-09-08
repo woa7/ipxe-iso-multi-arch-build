@@ -25,8 +25,8 @@ ALMALINUX=\
 	almalinux/8/BaseOS/x86_64/os/isolinux/vmlinuz \
 	almalinux/8/BaseOS/x86_64/os/isolinux/initrd.img
 ROCKYLINUX=\
-	rocky/8.3/BaseOS/x86_64/os/isolinux/vmlinuz \
-	rocky/8.3/BaseOS/x86_64/os/isolinux/initrd.img
+	rocky/8/BaseOS/x86_64/os/isolinux/vmlinuz \
+	rocky/8/BaseOS/x86_64/os/isolinux/initrd.img
 SCIENTIFIC=\
 	scientific/7x/x86_64/os/isolinux/vmlinuz \
 	scientific/7x/x86_64/os/isolinux/initrd.img \
