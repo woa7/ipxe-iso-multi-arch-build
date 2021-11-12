@@ -41,7 +41,7 @@ FREEDOS=$(shell cd $(FTP); find mirrors/images -type f)
 SOURCES=\
 	$(IPXE) $(IPXEBIN) \
 	memdisk \
-	pxelinux.0 \
+	pxelinux.0 pxelinux.cfg/pxelinux.0 pxelinux.cfg/lpxelinux.0 \
 	memtest.0 \
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
@@ -115,6 +115,12 @@ memdisk.sig:	../memdisk
 	$(SIGN) -in $< -out $@
 
 pxelinux.0.sig:	../pxelinux.0
+	$(SIGN) -in $< -out $@
+
+pxelinux.cfg/pxelinux.0.sig:	../pxelinux.cfg/pxelinux.0
+	$(SIGN) -in $< -out $@
+
+pxelinux.cfg/lpxelinux.0.sig:	../pxelinux.cfg/lpxelinux.0
 	$(SIGN) -in $< -out $@
 
 memtest.0.sig:	../images/memtest.0
