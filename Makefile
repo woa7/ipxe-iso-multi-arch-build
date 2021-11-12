@@ -11,7 +11,7 @@ ARM_TARGETS=\
 	bin-arm32-efi/snp.efi
 IPXECONFIGS="" com1 com2
 MEM=2048
-CPU=-smp 2 -cpu SandyBridge-IBRS
+CPU=-smp 2 -cpu Skylake-Client-noTSX-IBRS
 OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
@@ -107,7 +107,9 @@ boot:	all
 	qemu-kvm -m $(MEM) $(CPU) -boot once=$(BOOTORDER) \
 		-kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) -display $(OUT) \
-		$(NET) $(USB) $(RNG) \
+		$(NET) \
+		$(USB) \
+		$(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
@@ -115,7 +117,9 @@ boot:	all
 onlyboot:
 	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) -display $(OUT) \
-		$(NET) $(USB) $(RNG) \
+		$(NET) \
+		$(USB) \
+		$(RNG) \
 		$(PARAMS) \
 		$(ARGS)
 	@echo ""
