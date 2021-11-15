@@ -92,10 +92,10 @@ centos/7/os/i386/isolinux/%.sig:
 	curl http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'` \
 	  | $(SIGN) -in - -out $@
 
-almalinux/%.sig:
+almalinux/%.sig:	$(FTP)/mirrors/almalinux/%
 	@mkdir -p `dirname $@`
-	curl https://repo.almalinux.org/$(NOSIG) \
-	  | $(SIGN) -in - -out $@
+	#curl https://repo.almalinux.org/$(NOSIG) | $(SIGN) -in - -out $@
+	$(SIGN) -in $< -out $@
 
 rocky/%.sig:
 	@mkdir -p `dirname $@`
