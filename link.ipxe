@@ -5,7 +5,7 @@ set term_color:hex 1b:5b:31:3b
 set c_red ${term_color:string}31m
 set c_green ${term_color:string}32m
 set c_blue ${term_color:string}34m
-set c_reset ${esc:string}0m
+set c_reset ${esc:string}[0m
 echo ${c_reset}
 echo ${c_green}boot.salstar.sk${c_reset} - ${c_red}SAL's ${c_blue}boot menu${c_reset}
 echo ${c_reset}
