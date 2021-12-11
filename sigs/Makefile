@@ -18,6 +18,9 @@ CENTOS=$(shell cd $(FTP); ls -1 \
           centos/*/BaseOS/*/os/isolinux/vmlinuz \
           centos/*/BaseOS/*/os/isolinux/initrd.img \
 	)
+CENTOS9STREAM=\
+	centos-stream/9-stream/BaseOS/x86_64/os/isolinux/vmlinuz \
+        centos-stream/9-stream/BaseOS/x86_64/os/isolinux/initrd.img
 CENTOS_i386=\
 	centos/7/os/i386/isolinux/vmlinuz \
 	centos/7/os/i386/isolinux/initrd.img
@@ -45,7 +48,7 @@ SOURCES=\
 	memtest.0 \
 	$(shell cd ..; echo images/*) \
 	$(FEDORA) \
-	$(CENTOS) $(CENTOS_i386) \
+	$(CENTOS) $(CENTOS9STREAM) $(CENTOS_i386) \
 	$(ALMALINUX) \
 	$(ROCKYLINUX) \
 	$(SCIENTIFIC) \
@@ -90,6 +93,11 @@ NOSIG=$(@:.sig=)
 centos/7/os/i386/isolinux/%.sig:
 	@mkdir -p `dirname $@`
 	curl http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'` \
+	  | $(SIGN) -in - -out $@
+
+centos-stream/9-stream/BaseOS/x86_64/os/isolinux/%.sig:
+	@mkdir -p `dirname $@`
+	curl http://mirror.stream.centos.org`echo $(NOSIG) | sed 's/^centos-stream//'` \
 	  | $(SIGN) -in - -out $@
 
 almalinux/%.sig:	$(FTP)/mirrors/almalinux/%
