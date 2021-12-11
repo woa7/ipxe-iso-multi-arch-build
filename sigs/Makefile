@@ -95,10 +95,11 @@ centos/7/os/i386/isolinux/%.sig:
 	curl http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'` \
 	  | $(SIGN) -in - -out $@
 
-centos-stream/9-stream/BaseOS/x86_64/os/isolinux/%.sig:
+centos-stream/%.sig:	$(FTP)/mirrors/centos-stream/%
 	@mkdir -p `dirname $@`
-	curl http://mirror.stream.centos.org`echo $(NOSIG) | sed 's/^centos-stream//'` \
-	  | $(SIGN) -in - -out $@
+	$(SIGN) -in $< -out $@
+	#curl http://mirror.stream.centos.org`echo $(NOSIG) | sed 's/^centos-stream//'` \
+	#  | $(SIGN) -in - -out $@
 
 almalinux/%.sig:	$(FTP)/mirrors/almalinux/%
 	@mkdir -p `dirname $@`
