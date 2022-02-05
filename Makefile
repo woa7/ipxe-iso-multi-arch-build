@@ -10,14 +10,14 @@ TARGETS=\
 ARM_TARGETS=\
 	bin-arm32-efi/snp.efi
 IPXECONFIGS="" com1 com2
-MEM=2048
+MEM=2560
 CPU=-smp 2 -cpu Skylake-Client-noTSX-IBRS
 OUT=gtk
 MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
 #NETOPTS=,ipv4
-NET=-net nic,model=$(NETMODEL) -net user,hostfwd=tcp::2220-:22$(NETOPTS)
+NET=-net nic,model=$(NETMODEL),macaddr=$(MAC) -net user,hostfwd=tcp::2220-:22$(NETOPTS)
 USB=-usb -device usb-tablet
 RNG=-object rng-random,id=rng0,filename=/dev/urandom -device virtio-rng-pci,rng=rng0,id=rng0
 PARAMS:=
