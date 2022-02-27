@@ -49,7 +49,7 @@ SOURCES=\
 	memdisk \
 	pxelinux.0 pxelinux.cfg/pxelinux.0 pxelinux.cfg/lpxelinux.0 \
 	memtest.0 \
-	$(shell cd ..; echo images/*) \
+	$(shell cd ..; echo images/*.* images/pcmemtest/*) \
 	$(FEDORA) \
 	$(CENTOS) $(CENTOS9STREAM) $(CENTOS8) $(CENTOS_i386) \
 	$(ALMALINUX) \
