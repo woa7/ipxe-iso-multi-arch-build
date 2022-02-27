@@ -17,7 +17,8 @@ MONITOR=stdio
 NETMODEL=virtio
 WNETMODEL=e1000
 #NETOPTS=,ipv4
-NET=-net nic,model=$(NETMODEL),macaddr=$(MAC) -net user,hostfwd=tcp::2220-:22$(NETOPTS)
+HOSTFWD=,hostfwd=tcp::2220-:22
+NET=-net nic,model=$(NETMODEL),macaddr=$(MAC) -net user$(HOSTFWD)$(NETOPTS)
 USB=-usb -device usb-tablet
 RNG=-object rng-random,id=rng0,filename=/dev/urandom -device virtio-rng-pci,rng=rng0,id=rng0
 PARAMS:=
@@ -136,7 +137,7 @@ stdioboot:
 	reset # reset terminal
 
 wboot:
-	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL) -netdev user,id=vlan1"
+	+make boot NET="$(NET) -net nic,id=vlan1,model=$(WNETMODEL)"
 
 $(DISKTMP):
 	qemu-img create $@ 10g
