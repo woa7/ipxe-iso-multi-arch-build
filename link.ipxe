@@ -96,11 +96,14 @@ ifopen net${net}
 goto boot
 
 :link_vlan
+echo -n Enter network card number [0 for net0, defaults to 0]: ${}
+read net
+isset ${net} || set net 0
 echo -n Enter VLAN number: ${}
 read vlan
-vcreate --tag ${vlan} net0
+vcreate --tag ${vlan} net${net}
 iflinkwait --timeout=60000 || echo Link wait failed!
-ifconf net0-${vlan}
+ifconf net${net}-${vlan}
 goto boot
 
 :link_retry4
