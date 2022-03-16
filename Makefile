@@ -116,7 +116,8 @@ boot:	all
 	@echo ""
 
 onlyboot:
-	qemu-kvm -m $(MEM) $(CPU) -kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
+	qemu-kvm -m $(MEM) $(CPU) -boot once=$(BOOTORDER) \
+		-kernel ipxe/$(BOOTCONFIG)/ipxe.lkrn \
 		-monitor $(MONITOR) -display $(OUT) \
 		$(NET) \
 		$(USB) \
