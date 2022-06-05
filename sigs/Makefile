@@ -27,9 +27,10 @@ CENTOS9STREAM=\
 CENTOS_i386=\
 	centos/7/os/i386/isolinux/vmlinuz \
 	centos/7/os/i386/isolinux/initrd.img
-ALMALINUX=\
-	almalinux/8/BaseOS/x86_64/os/isolinux/vmlinuz \
-	almalinux/8/BaseOS/x86_64/os/isolinux/initrd.img
+ALMALINUX=$(shell cd $(FTP)/mirrors; ls -1 \
+	almalinux/*/BaseOS/x86_64/os/isolinux/vmlinuz \
+	almalinux/*/BaseOS/x86_64/os/isolinux/initrd.img \
+	)
 ROCKYLINUX=\
 	rocky/8/BaseOS/x86_64/os/isolinux/vmlinuz \
 	rocky/8/BaseOS/x86_64/os/isolinux/initrd.img
@@ -98,7 +99,7 @@ centos/7/os/i386/isolinux/%.sig:
 	curl http://mirror.centos.org/altarch`echo $(NOSIG) | sed 's/^centos//'` \
 	  | $(SIGN) -in - -out $@
 
-centos-stream/%.sig:	$(FTP)/mirrors/centos-stream/%
+centos-stream/%.sig:	$(FTP)/centos-stream/%
 	@mkdir -p `dirname $@`
 	$(SIGN) -in $< -out $@
 	#curl http://mirror.stream.centos.org`echo $(NOSIG) | sed 's/^centos-stream//'` \
