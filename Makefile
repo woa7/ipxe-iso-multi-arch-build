@@ -55,8 +55,8 @@ sigs:
 	+make -C sigs
 
 rsync:	images/modules.cgz sigs
-	rsync -avPH --inplace --delete ./ www.salstar.sk:public_html/boot/ \
-	  --exclude='**/.git' --exclude='**/rsync' --exclude='src/' \
+	rsync -avPHC --inplace --delete ./ www.salstar.sk:public_html/boot/ \
+	  --exclude='**/.git*' --exclude='**/rsync' --exclude='src' \
 	  --exclude='.well-known'
 	# to tftp server for dhcp boot
 	rsync -avPH --inplace ipxe/*pxe ipxe/com* ipxe/*.efi \
