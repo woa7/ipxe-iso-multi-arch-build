@@ -15,25 +15,32 @@ FEDORA=$(shell cd $(FTP); ls -1 \
 CENTOS=$(shell cd $(FTP); ls -1 \
 	  centos/*/os/*/isolinux/vmlinuz \
           centos/*/os/*/isolinux/initrd.img \
-          centos/*/BaseOS/*/os/isolinux/vmlinuz \
-          centos/*/BaseOS/*/os/isolinux/initrd.img \
+	  centos/*/os/*/images/pxeboot/vmlinuz \
+          centos/*/os/*/images/pxeboot/initrd.img \
+          centos*/*/BaseOS/*/os/isolinux/vmlinuz \
+          centos*/*/BaseOS/*/os/isolinux/initrd.img \
+          centos*/*/BaseOS/*/os/images/pxeboot/vmlinuz \
+          centos*/*/BaseOS/*/os/images/pxeboot/initrd.img \
 	)
-CENTOS8=\
+CENTOS_VAULT=\
 	centos-vault/8/BaseOS/x86_64/os/isolinux/vmlinuz \
-	centos-vault/8/BaseOS/x86_64/os/isolinux/initrd.img
-CENTOS9STREAM=\
-	centos-stream/9-stream/BaseOS/x86_64/os/isolinux/vmlinuz \
-        centos-stream/9-stream/BaseOS/x86_64/os/isolinux/initrd.img
+	centos-vault/8/BaseOS/x86_64/os/isolinux/initrd.img \
+	centos-vault/8/BaseOS/x86_64/os/images/pxeboot/vmlinuz \
+	centos-vault/8/BaseOS/x86_64/os/images/pxeboot/initrd.img
 CENTOS_i386=\
 	centos/7/os/i386/isolinux/vmlinuz \
 	centos/7/os/i386/isolinux/initrd.img
 ALMALINUX=$(shell cd $(FTP)/mirrors; ls -1 \
 	almalinux/*/BaseOS/x86_64/os/isolinux/vmlinuz \
 	almalinux/*/BaseOS/x86_64/os/isolinux/initrd.img \
+	almalinux/*/BaseOS/x86_64/os/images/pxeboot/vmlinuz \
+	almalinux/*/BaseOS/x86_64/os/images/pxeboot/initrd.img \
 	)
 ROCKYLINUX=\
 	rocky/8/BaseOS/x86_64/os/isolinux/vmlinuz \
-	rocky/8/BaseOS/x86_64/os/isolinux/initrd.img
+	rocky/8/BaseOS/x86_64/os/isolinux/initrd.img \
+	rocky/8/BaseOS/x86_64/os/images/pxeboot/vmlinuz \
+	rocky/8/BaseOS/x86_64/os/images/pxeboot/initrd.img
 SCIENTIFIC=\
 	scientific/7x/x86_64/os/isolinux/vmlinuz \
 	scientific/7x/x86_64/os/isolinux/initrd.img \
@@ -51,7 +58,7 @@ SOURCES=\
 	pxelinux.0 pxelinux.cfg/pxelinux.0 pxelinux.cfg/lpxelinux.0 \
 	$(shell cd ..; echo images/*.* images/pcmemtest/* images/mt86plus/*) \
 	$(FEDORA) \
-	$(CENTOS) $(CENTOS9STREAM) $(CENTOS8) $(CENTOS_i386) \
+	$(CENTOS) $(CENTOS_VAULT) $(CENTOS_i386) \
 	$(ALMALINUX) \
 	$(ROCKYLINUX) \
 	$(SCIENTIFIC) \
@@ -81,7 +88,7 @@ bsd/%.ipxe.sig:	../bsd/%.ipxe
 	$(SIGN) -in $< -out $@
 
 images/%.sig:	../images/%
-	@mkdir -p images
+	@mkdir -p `dirname $@`
 	$(SIGN) -in $< -out $@
 
 fedora/%.sig:	$(FTP)/fedora/%
@@ -99,7 +106,8 @@ centos/7/os/i386/isolinux/%.sig:
 	  | $(SIGN) -in - -out $@
 
 centos-stream/%.sig:	$(FTP)/centos-stream/%
-	@mkdir -p `dirname $@`
+	# centos-stream is a link to centos, create centos directory first
+	@mkdir -p centos `dirname $@`
 	$(SIGN) -in $< -out $@
 	#curl http://mirror.stream.centos.org`echo $(NOSIG) | sed 's/^centos-stream//'` \
 	#  | $(SIGN) -in - -out $@
