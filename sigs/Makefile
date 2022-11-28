@@ -37,6 +37,10 @@ ALMALINUX=$(shell cd $(FTP)/mirrors; ls -1 \
 	almalinux/*/BaseOS/x86_64/os/images/pxeboot/initrd.img \
 	)
 ROCKYLINUX=\
+	rocky/9/BaseOS/x86_64/os/isolinux/vmlinuz \
+	rocky/9/BaseOS/x86_64/os/isolinux/initrd.img \
+	rocky/9/BaseOS/x86_64/os/images/pxeboot/vmlinuz \
+	rocky/9/BaseOS/x86_64/os/images/pxeboot/initrd.img \
 	rocky/8/BaseOS/x86_64/os/isolinux/vmlinuz \
 	rocky/8/BaseOS/x86_64/os/isolinux/initrd.img \
 	rocky/8/BaseOS/x86_64/os/images/pxeboot/vmlinuz \
