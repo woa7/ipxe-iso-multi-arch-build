@@ -123,10 +123,10 @@ jobs:
           make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
                bin-arm32-efi/snp.efi \
              #  bin-arm32-efi/snponly.efi \
-               bin-arm32-efi/intel.efi \
+             #  bin-arm32-efi/intel.efi \
              #  bin-arm32-efi/intel.usb \
              #  bin-arm32-efi/intel.iso
-              
+
       - name: find iso fils
         run: |
           set -vx
