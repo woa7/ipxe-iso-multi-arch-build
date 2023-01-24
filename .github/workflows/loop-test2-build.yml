@@ -76,7 +76,7 @@ jobs:
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
 
-      - name: Build 2/4   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
+      - name: Build 2/4   bin-i386-efi/ipxe.efi
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin-i386-efi/ipxe.efi
@@ -140,18 +140,18 @@ jobs:
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -l -i '{}' ';'
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec 7z l '{}' ';'
 
-      - name: Build (Everything)
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j$((`nproc`+0)) -C src everything
+#      - name: Build (Everything)
+#        run: |
+#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          make -j$((`nproc`+0)) -C src everything
           
       # NOT working# - name: Build valgrind Tests
       # NOT working#         run: |
       # NOT working#           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
       # NOT working#           make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
           
-      - name: valgrind Tests
-        run: |
+#      - name: valgrind Tests
+#        run: |
 #          valgrind ./src/bin-i386-linux/tests.linux
 #          valgrind ./src/bin-x86_64-linux/tests.linux
 
