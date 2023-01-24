@@ -71,12 +71,18 @@ jobs:
                            gcc-arm-none-eabi \
                            gcc-aarch64-linux-gnu \
                            g++-9-aarch64-linux-gnu
-      - name: Build BIOS ARM32 ARM64
+      - name: Build 1/3   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
-          make -j $((`nproc`+0)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
-          cd src && ./util/genfsimg -o -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
+      - name: Build 2/3   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+1)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+      - name: Build 3/3  genfsimg
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
