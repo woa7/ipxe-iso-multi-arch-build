@@ -31,6 +31,10 @@ jobs:
           repository: ipxe/ipxe
           path: .
           fetch-depth: 0
+
+      #- uses: abbbi/github-actions-tune@v1
+      - uses: abbbi/github-actions-tune@6159a776ffb652135ee2386263da85dfd0b89794
+
       - name: Install packages
         run: |
           sudo dpkg --add-architecture i386
