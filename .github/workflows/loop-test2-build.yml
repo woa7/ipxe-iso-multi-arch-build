@@ -1,0 +1,144 @@
+---
+#name: loop-test2-build
+
+on:
+  push:
+  #  branches: [ master ]
+    paths-ignore:
+      - '.github/workflows/**'
+
+  workflow_dispatch:
+    inputs:
+      clear-docker-cache:
+        description: 'clear docker cache with rm -fr /tmp/.buildx-cache /tmp/.buildx-cache-old /tmp/.buildx-cache-new'     
+        required: false 
+        type: boolean
+# https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
+# https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+permissions:
+  packages: read
+  contents: read
+
+jobs:
+
+  x86:
+    name: x86-loop-test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          repository: ipxe/ipxe
+          path: .
+          fetch-depth: 0
+      - name: Install packages
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y -o Acquire::Retries=50 \
+                           mtools syslinux isolinux \
+                           libc6-dev-i386 libc6-dbg:i386 valgrind \
+                           p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
+      - name: install ccache
+        uses: hendrikmuhs/ccache-action@v1.2.8
+        with:
+          key: ${{ matrix.os }}-${{ matrix.type }}
+          verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
+          # max-size: 500M # Max size of the cache, default: 500M
+          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          # save: false # If 'false', do not save the cache, only restore. default: true
+          
+# https://github.com/ipxe/ipxe/discussions/614#discussioncomment-2363937          
+# @mcb30 on Mar 15, 2022
+# The default build will give you a BIOS image. To build an EFI image, you will need to do something like make bin-x86_64-efi/ipxe.iso.
+#
+# For the record: the prebuilt ISO published at https://boot.ipxe.org/ipxe.iso is a combination of the BIOS, x86_64 EFI, and Aarch64 EFI images, built using the equivalent of:
+# make bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
+# make bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+# ./util/genfsimg -o ipxe.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+#
+# The Makefile does not currently support building this combined ISO in one step as a single target, since it involves compiling for multiple CPU architectures.
+          
+#      - name: Build (BIOS)
+#        run: |
+#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          make -j $((`nproc`+0)) -C src
+      - name: Install packages arm gcc
+        run: |
+          sudo apt update
+          sudo apt install -y -o Acquire::Retries=50 \
+                           mtools syslinux isolinux genisoimage xorriso mtools \
+                           gcc-arm-none-eabi \
+                           gcc-aarch64-linux-gnu \
+                           g++-9-aarch64-linux-gnu
+      - name: Build BIOS ARM32 ARM64
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
+          make -j $((`nproc`+0)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+          cd src && ./util/genfsimg -o -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          #make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
+          #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
+          #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
+          #     bin-arm32-efi/intel.efi \
+          #     bin-arm32-efi/intel.usb \
+          #     bin-arm32-efi/intel.iso
+      #- name: Build ARM64
+      #  run: |
+      #    export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+      #    make -j $((`nproc`+0)) -C src CROSS=aarch64-linux-gnu- \
+      #         bin-arm64-efi/ipxe.efi \
+      #         bin-arm64-efi/ipxe.usb \
+      #         bin-arm64-efi/ipxe.iso
+
+      - name: Install for ISO build
+        run: |
+          sudo apt install -y -o Acquire::Retries=50 \
+                           mtools syslinux isolinux \
+                           p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
+      - name: Build ISO
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
+          bin-i386-efi/ipxe.efi \
+          bin-x86_64-efi/ipxe.efi \
+          bin-arm32-efi/ipxe.efi \
+          bin-arm64-efi/ipxe.efi \
+          bin/ipxe.lkrn || \
+          ./util/genfsimg -o ipxe-any.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
+      - name: list ISO
+        run: |
+          find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          isoinfo -d -i src/*.iso
+          isoinfo -l -i src/*.iso
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
+      - name: Build (Everything)
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j$((`nproc`+0)) -C src everything
+      - name: Build ISO (Everything)
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          find . -name ipxe.lkrn -or -name ipxe.efi -print
+          cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
+          bin-i386-efi/ipxe.efi \
+          bin-x86_64-efi/ipxe.efi \
+          bin-arm32-efi/ipxe.efi \
+          bin-arm64-efi/ipxe.efi \
+          bin/ipxe.lkrn || \
+          ./util/genfsimg -o ipxe-glob.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
+      - name: list ISO (Everything)
+        continue-on-error: true
+        run: |
+          set -vx
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          isoinfo -d -i src/*.iso
+          isoinfo -l -i src/*.iso
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
+      - name: Test
+        run: |
+          valgrind ./src/bin-i386-linux/tests.linux
+          valgrind ./src/bin-x86_64-linux/tests.linux
+
+
