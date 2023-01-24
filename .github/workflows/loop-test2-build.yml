@@ -82,7 +82,8 @@ jobs:
       - name: Build 3/3  genfsimg
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          #cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
