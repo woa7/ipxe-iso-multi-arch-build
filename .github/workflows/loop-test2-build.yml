@@ -44,6 +44,7 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
+                  --no-install-recommends \
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
@@ -85,10 +86,11 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
+                  --no-install-recommends \
                            mtools syslinux isolinux genisoimage xorriso mtools \
                            gcc-arm-none-eabi \
                            gcc-aarch64-linux-gnu \
-                           g++-9-aarch64-linux-gnu
+                          # g++-9-aarch64-linux-gnu
 
       - name: Build 3/4   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
         run: |
@@ -120,6 +122,7 @@ jobs:
       - name: Install for ISO build
         run: |
           sudo apt install -y -o Acquire::Retries=50 \
+                  --no-install-recommends \
                            mtools syslinux isolinux \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: Build ISO
