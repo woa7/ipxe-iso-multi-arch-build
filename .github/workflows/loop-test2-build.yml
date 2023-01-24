@@ -7,8 +7,9 @@ on:
     #paths-ignore:
     #  - '.github/workflows/**'
     paths:
-      - '.github/workflows/loop-test2-build.yml'
       - '!.github/workflows/**'
+      - '.github/workflows/loop-test2-build.yml'
+
 
 
   workflow_dispatch:
