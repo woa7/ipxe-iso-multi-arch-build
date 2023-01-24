@@ -72,12 +72,12 @@ jobs:
 #        run: |
 #          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
 #          make -j $((`nproc`+0)) -C src
-      - name: Build 1/4   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
+      - name: Build 1   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
 
-      - name: Build 2/4   bin-i386-efi/ipxe.efi
+      - name: Build 2   bin-i386-efi/ipxe.efi
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin-i386-efi/ipxe.efi
@@ -92,16 +92,17 @@ jobs:
                            gcc-aarch64-linux-gnu \
                           # g++-9-aarch64-linux-gnu
 
-      - name: Build 3/4   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+      - name: Build 3   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
-      - name: Build 4/4  genfsimg ipxe-bios_x86_64-efi_arm64-efi.iso
+          
+      - name: Build 4   genfsimg ipxe-bios_x86_64-efi_arm64-efi.iso
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           cd src && ./util/genfsimg -o ipxe-bios_x86_64-efi_arm64-efi.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi \
-                    ||  ./util/genfsimg -o ipxe-any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
+                    ||  ./util/genfsimg -o ipxe-bios_x86_64-efi_arm64-efi-any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
           #make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
@@ -110,6 +111,35 @@ jobs:
           #     bin-arm32-efi/intel.iso \
           #     bin-arm32-efi/snp.efi \
           #     bin-arm32-efi/snponly.efi
+
+      - name: Build 5   bin-i386-efi/ipxe.efi
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
+
+      - name: Build 6   bin-arm32-efi/intel.efi bin-arm32-efi/snp.efi bin-arm32-efi/snponly.efi
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
+               bin-arm32-efi/intel.efi \
+               bin-arm32-efi/intel.usb \
+               bin-arm32-efi/intel.iso \
+               bin-arm32-efi/snp.efi \
+               bin-arm32-efi/snponly.efi
+               
+      - name: Build 7   genfsimg ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #cd src && ./util/genfsimg -o ipxe-bios-i386-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          cd src && ./util/genfsimg -o ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso \
+                            bin/ipxe.lkrn \
+                            bin-x86_64-efi/ipxe.efi \
+                            bin-i386-efi/ipxe.efi \
+                            bin-arm64-efi/ipxe.efi \
+                            bin-arm32-efi/intel.efi \
+                            bin-arm32-efi/snp.efi \
+                            bin-arm32-efi/snponly.efi
+                    ||  ./util/genfsimg -o ipxe-bios__x86_64-efi__arm64-efi__i386-efi__arm32-efi__any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
 
       #- name: Build ARM64
       #  run: |
