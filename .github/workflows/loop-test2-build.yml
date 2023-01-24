@@ -113,29 +113,6 @@ jobs:
           isoinfo -d -i src/*.iso
           isoinfo -l -i src/*.iso
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
-      - name: Build (Everything)
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j$((`nproc`+0)) -C src everything
-      - name: Build ISO (Everything)
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          find . -name ipxe.lkrn -or -name ipxe.efi -print
-          cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
-          bin-i386-efi/ipxe.efi \
-          bin-x86_64-efi/ipxe.efi \
-          bin-arm32-efi/ipxe.efi \
-          bin-arm64-efi/ipxe.efi \
-          bin/ipxe.lkrn || \
-          ./util/genfsimg -o ipxe-glob.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
-      - name: list ISO (Everything)
-        continue-on-error: true
-        run: |
-          set -vx
-          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
-          isoinfo -d -i src/*.iso
-          isoinfo -l -i src/*.iso
-          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
       - name: Test
         run: |
           valgrind ./src/bin-i386-linux/tests.linux
