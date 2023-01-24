@@ -23,7 +23,7 @@ jobs:
 
   x86:
     name: x86-loop-test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
         uses: actions/checkout@v3
