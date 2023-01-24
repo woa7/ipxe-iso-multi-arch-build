@@ -135,10 +135,12 @@ jobs:
           ./util/genfsimg -o ipxe-any2.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
       - name: list ISO
         run: |
-          find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec ls -lah '{}' ';'
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -d -i '{}' ';'
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -l -i '{}' ';'
-          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec 7z l '{}' ';'
+          #find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
+          find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
 
 #      - name: Build (Everything)
 #        run: |
