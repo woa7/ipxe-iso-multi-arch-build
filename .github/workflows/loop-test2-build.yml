@@ -35,6 +35,10 @@ jobs:
       #- uses: abbbi/github-actions-tune@v1
       - uses: abbbi/github-actions-tune@6159a776ffb652135ee2386263da85dfd0b89794
 
+      - name: link eatmydata to make
+        run: |
+          ln -s /usr/bin/eatmydata /usr/local/bin/make
+
       - name: Install packages
         run: |
           sudo dpkg --add-architecture i386
@@ -128,7 +132,7 @@ jobs:
       - name: Build valgrind Tests
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-#          make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
+          make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
           
       - name: valgrind Tests
         run: |
