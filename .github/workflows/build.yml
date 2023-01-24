@@ -26,7 +26,8 @@ jobs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
+        #uses: fkirc/skip-duplicate-actions@master
+        uses: fkirc/skip-duplicate-actions@v5.3.0
         with:
           # All of these options are optional, so you can remove them if you are happy with the defaults
           concurrent_skipping: 'never'
@@ -54,9 +55,13 @@ jobs:
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1
+        uses: hendrikmuhs/ccache-action@v1.2.8
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
+          verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
+          # max-size: 500M # Max size of the cache, default: 500M
+          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          # save: false # If 'false', do not save the cache, only restore. default: true
       - name: Build (BIOS)
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -87,9 +92,13 @@ jobs:
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-arm-none-eabi
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1
+        uses: hendrikmuhs/ccache-action@v1.2.8
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
+          verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
+          # max-size: 500M # Max size of the cache, default: 500M
+          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          # save: false # If 'false', do not save the cache, only restore. default: true
       - name: Build
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -115,9 +124,13 @@ jobs:
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1
+        uses: hendrikmuhs/ccache-action@v1.2.8
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
+          verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
+          # max-size: 500M # Max size of the cache, default: 500M
+          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          # save: false # If 'false', do not save the cache, only restore. default: true
       - name: Build
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
