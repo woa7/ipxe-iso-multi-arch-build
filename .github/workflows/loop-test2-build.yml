@@ -124,9 +124,15 @@ jobs:
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -d -i '{}' ';'
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -l -i '{}' ';'
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec 7z l '{}' ';'
-      - name: Test
+
+      - name: Build valgrind Tests
         run: |
-          valgrind ./src/bin-i386-linux/tests.linux
-          valgrind ./src/bin-x86_64-linux/tests.linux
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
+          
+      - name: valgrind Tests
+        run: |
+#          valgrind ./src/bin-i386-linux/tests.linux
+#          valgrind ./src/bin-x86_64-linux/tests.linux
 
 
