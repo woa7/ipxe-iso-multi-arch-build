@@ -4,8 +4,11 @@
 on:
   push:
   #  branches: [ master ]
-    paths-ignore:
-      - '.github/workflows/**'
+    #paths-ignore:
+    #  - '.github/workflows/**'
+    paths:
+      - '.github/workflows/loop-test2-build.yml'
+      - '!.github/workflows/**'
 
   workflow_dispatch:
     inputs:
