@@ -1,0 +1,42 @@
+---
+# from https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#matching-a-cache-key
+name: cleanup caches by a branch
+on:
+#  pull_request:
+#    types:
+#      - closed
+  workflow_dispatch:
+#    inputs:
+#      clear-docker-cache:
+#        description: 'clear docker cache with rm -fr /tmp/.buildx-cache /tmp/.buildx-cache-old /tmp/.buildx-cache-new'     
+#        required: false 
+#        type: boolean
+
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        
+      - name: Cleanup
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          REPO=${{ github.repository }}
+          BRANCH=${{ github.ref }}
+
+          echo "Fetching list of cache key"
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
+
+          ## Setting this to not fail the workflow while deleting cache keys. 
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+          done
+          echo "Done"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
