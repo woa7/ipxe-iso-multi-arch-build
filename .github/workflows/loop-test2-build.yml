@@ -66,11 +66,21 @@ jobs:
 # ./util/genfsimg -o ipxe.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
 #
 # The Makefile does not currently support building this combined ISO in one step as a single target, since it involves compiling for multiple CPU architectures.
-          
+
 #      - name: Build (BIOS)
 #        run: |
 #          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
 #          make -j $((`nproc`+0)) -C src
+      - name: Build 1/4   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
+
+      - name: Build 2/4   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
+        run: |
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          make -j $((`nproc`+1)) -C src bin-i386-efi/ipxe.efi
+
       - name: Install packages arm gcc
         run: |
           sudo apt update
@@ -79,25 +89,26 @@ jobs:
                            gcc-arm-none-eabi \
                            gcc-aarch64-linux-gnu \
                            g++-9-aarch64-linux-gnu
-      - name: Build 1/3   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
-      - name: Build 2/3   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
+
+      - name: Build 3/4   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+1)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
-      - name: Build 3/3  genfsimg
+      - name: Build 4/4  genfsimg ipxe-bios_x86_64-efi_arm64-efi.iso
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
-          cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
+          cd src && ./util/genfsimg -o ipxe-bios_x86_64-efi_arm64-efi.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi \
+                    ||  ./util/genfsimg -o ipxe-any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
           #make -j $((`nproc`+0)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
           #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
           #     bin-arm32-efi/intel.efi \
           #     bin-arm32-efi/intel.usb \
-          #     bin-arm32-efi/intel.iso
+          #     bin-arm32-efi/intel.iso \
+          #     bin-arm32-efi/snp.efi \
+          #     bin-arm32-efi/snponly.efi
+
       #- name: Build ARM64
       #  run: |
       #    export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -121,7 +132,7 @@ jobs:
           bin-arm32-efi/ipxe.efi \
           bin-arm64-efi/ipxe.efi \
           bin/ipxe.lkrn || \
-          ./util/genfsimg -o ipxe-any.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
+          ./util/genfsimg -o ipxe-any2.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
       - name: list ISO
         run: |
           find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
@@ -129,10 +140,15 @@ jobs:
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -l -i '{}' ';'
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec 7z l '{}' ';'
 
-      - name: Build valgrind Tests
+      - name: Build (Everything)
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
+          make -j$((`nproc`+0)) -C src everything
+          
+      # NOT working# - name: Build valgrind Tests
+      # NOT working#         run: |
+      # NOT working#           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+      # NOT working#           make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
           
       - name: valgrind Tests
         run: |
