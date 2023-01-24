@@ -117,9 +117,9 @@ jobs:
       - name: list ISO
         run: |
           find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
-          isoinfo -d -i src/*.iso
-          isoinfo -l -i src/*.iso
-          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
+          find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -d -i '{}' ';'
+          find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec isoinfo -l -i '{}' ';'
+          find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print -exec 7z l '{}' ';'
       - name: Test
         run: |
           valgrind ./src/bin-i386-linux/tests.linux
