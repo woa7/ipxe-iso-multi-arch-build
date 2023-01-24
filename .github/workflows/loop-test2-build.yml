@@ -175,10 +175,10 @@ jobs:
           #find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
           find . \( -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
 
-      - name: Build (Everything)
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          make -j$((`nproc`+0)) -C src everything
+#      - name: Build (Everything)
+#        run: |
+#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          make -j$((`nproc`+0)) -C src everything
           
       # NOT working# - name: Build valgrind Tests
       # NOT working#         run: |
