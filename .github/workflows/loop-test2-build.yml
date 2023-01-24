@@ -129,6 +129,7 @@ jobs:
                
       - name: Build 7   genfsimg ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso
         run: |
+          set -vx
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-i386-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           cd src && ./util/genfsimg -o ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso \
@@ -136,9 +137,9 @@ jobs:
                             bin-x86_64-efi/ipxe.efi \
                             bin-i386-efi/ipxe.efi \
                             bin-arm64-efi/ipxe.efi \
-                            bin-arm32-efi/intel.efi \
+                         #   bin-arm32-efi/intel.efi \
                             bin-arm32-efi/snp.efi \
-                            bin-arm32-efi/snponly.efi
+                         #   bin-arm32-efi/snponly.efi
                     ||  ./util/genfsimg -o ipxe-bios__x86_64-efi__arm64-efi__i386-efi__arm32-efi__any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
 
       #- name: Build ARM64
