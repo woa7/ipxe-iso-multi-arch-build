@@ -85,6 +85,12 @@ jobs:
           fi
 #          ln -s /usr/bin/eatmydata /usr/local/bin/make
 
+      - uses: actions/cache/restore@v3
+        id: cache-apt-restore
+        with:
+          path: /var/cache/apt/archives/*.deb
+          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
+
       - uses: actions/cache@v3
         id: cache-apt
         with:
@@ -278,7 +284,7 @@ jobs:
 #          valgrind ./src/bin-x86_64-linux/tests.linux
 
       - uses: actions/cache/save@v3
-        #id: cache-apt-save
+        id: cache-apt-save
         if: always() # or any other condition to invoke the save action
         with:
           path: /var/cache/apt/archives/*.deb
