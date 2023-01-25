@@ -88,7 +88,7 @@ jobs:
       - uses: actions/cache/restore@v3
         id: cache-apt-restore
         with:
-          path: /var/cache/apt/archives/*.deb
+          path: /tmp/var/cache/apt/archives/*.deb
           key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
 
       - uses: actions/cache@v3
