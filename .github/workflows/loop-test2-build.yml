@@ -30,6 +30,32 @@ jobs:
     name: x86-loop-test
     runs-on: ubuntu-22.04
     steps:
+
+      - name: echo path
+        run: |
+          set -x
+          echo "$GITHUB_PATH"
+          echo "$PATH"
+          echo "############################"
+          env
+  
+      - name: link eatmydata to make, add ccache to path, set make
+        run: |
+          ln -s /usr/bin/eatmydata /usr/local/bin/make
+          #echo "$HOME/.local/bin" >> $GITHUB_PATH
+          echo "/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+          echo "MAKE_OPT=-j $((`nproc`+0))" >> $GITHUB_ENV
+          echo "MAKE_OPT2=-j 3" >> $GITHUB_ENV
+          echo "MAKE_OPT3=$((`nproc`+0))" >> $GITHUB_ENV
+
+      - name: echo path
+        run: |
+          set -x
+          echo "$GITHUB_PATH"
+          echo "$PATH"
+          echo "############################"
+          env
+    
       - name: Check out code
         uses: actions/checkout@v3
         with:
