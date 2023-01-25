@@ -47,6 +47,21 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
 
+      - name: "github.event.inputs.no-cache-save-apt != 'true'"
+        if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
+      
+      - name: "github.event.inputs.clear-ccache == 'true'"
+        if: ${{ github.event.inputs.clear-ccache }}
+
+      - name: "github.event.inputs.clear-ccache"
+        if: ${{ github.event.inputs.clear-ccache }}
+        
+      - name: "github.event.inputs.make-everything-arm"
+        if: ${{ github.event.inputs.make-everything-arm }}
+
+      - name: "github.event.inputs.make-everything-arm arm32"
+        if: ${{ github.event.inputs.make-everything-arm }}
+
       - name: echo path
         run: |
           set -x
