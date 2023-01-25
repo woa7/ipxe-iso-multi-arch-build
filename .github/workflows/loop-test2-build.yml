@@ -262,12 +262,12 @@ jobs:
                           # g++-9-aarch64-linux-gnu
 
       - name: run Build make-everything-aarch64
-        if: ${{ github.event.inputs.make-everything-arm }}
+        if: ${{ github.event.inputs.make-everything-arm  == 'true' }}
         run: |
           make ${{ env.MAKE_OPT }} -C src everything CROSS=aarch64-linux-gnu-
 
       - name: run Build make-everything-arm32
-        if: ${{ github.event.inputs.make-everything-arm }}
+        if: ${{ github.event.inputs.make-everything-arm  == 'true' }}
         run: |
           make ${{ env.MAKE_OPT }} -C src everything CROSS=arm-none-eabi-
 
