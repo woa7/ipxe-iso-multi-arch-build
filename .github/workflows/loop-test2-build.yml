@@ -49,18 +49,29 @@ jobs:
 
       - name: "github.event.inputs.no-cache-save-apt != 'true'"
         if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
-      
+        run: |
+          echo github.event.inputs.no-cache-save-apt
+        
       - name: "github.event.inputs.clear-ccache == 'true'"
         if: ${{ github.event.inputs.clear-ccache }}
+        run: |
+          echo github.event.inputs.clear-ccache
 
       - name: "github.event.inputs.clear-ccache"
         if: ${{ github.event.inputs.clear-ccache }}
+        run: |
+          echo github.event.inputs.clear-ccache
         
       - name: "github.event.inputs.make-everything-arm"
         if: ${{ github.event.inputs.make-everything-arm }}
+        run: |
+          echo github.event.inputs.make-everything-arm
 
       - name: "github.event.inputs.make-everything-arm arm32"
         if: ${{ github.event.inputs.make-everything-arm }}
+        run: |
+          echo github.event.inputs.make-everything-arm
+        
 
       - name: echo path
         run: |
