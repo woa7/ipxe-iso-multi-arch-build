@@ -18,6 +18,10 @@ on:
         description: 'clear docker cache with rm -fr /tmp/.buildx-cache /tmp/.buildx-cache-old /tmp/.buildx-cache-new'     
         required: false 
         type: boolean
+      no-cache-save-apt:
+        description: 'disabel cache-save-apt save and restore'     
+        required: false 
+        type: boolean
 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
@@ -50,6 +54,10 @@ jobs:
           ###echo "MAKE_OPT2=-j 3" >> $GITHUB_ENV
           ###echo "MAKE_OPT3=$((`nproc`+0))" >> $GITHUB_ENV
           echo "LSB_RELEASE_SC=$(lsb_release --short --codename)" >> $GITHUB_ENV
+          
+      - name: Binary::apt::APT::Keep-Downloaded-Packages "true" /etc/apt/apt.conf.d/01keep-debs
+        run: |
+          if: ${{ inputs.no-cache-save-apt != 'true' }}
           # https://superuser.com/questions/1405001/why-does-apt-do-not-store-downloaded-packages-anymore
           echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' | sudo tee /etc/apt/apt.conf.d/01keep-debs
           #echo 'APT::Keep-Downloaded-Packages "true";' | sudo tee -a /etc/apt/apt.conf.d/01keep-debs
@@ -88,6 +96,7 @@ jobs:
 #          ln -s /usr/bin/eatmydata /usr/local/bin/make
 
       - name: sudo chown --verbose "$USER:" /var/cache/apt/archives/*.deb
+        if: ${{ inputs.no-cache-save-apt != 'true' }}
         run: |
           set -x
           sudo chown --verbose "$USER:" /var/cache/apt/archives
@@ -101,6 +110,7 @@ jobs:
           #echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
         shell: bash
       - uses: actions/cache/restore@v3.2.3
+        if: ${{ inputs.no-cache-save-apt != 'true' }}
         id: cache-apt-restore
         with:
           path: "/var/cache/apt/archives/*.deb"
@@ -113,6 +123,7 @@ jobs:
           #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}-${{ steps.get-date.outputs.date }}
           #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
       - name: sudo chown --verbose "root:" /var/cache/apt/archives
+        if: ${{ inputs.no-cache-save-apt != 'true' }}
         run: |
           set -x
           sudo chown --verbose "root:" /var/cache/apt/archives
@@ -311,6 +322,7 @@ jobs:
 
       - uses: actions/cache/save@v3.2.3
         ###id: cache-apt-save
+        if: ${{ inputs.no-cache-save-apt != 'true' }}
         ###if: always() # or any other condition to invoke the save action
         with:
           path: /var/cache/apt/archives/*.deb
