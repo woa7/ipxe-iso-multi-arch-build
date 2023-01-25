@@ -52,8 +52,23 @@ jobs:
         run: |
           echo github.event.inputs.no-cache-save-apt
         
+      - name: "github.event.inputs.clear-ccache == 'false'"
+        if: ${{ github.event.inputs.clear-ccache == 'false' }}
+        run: |
+          echo github.event.inputs.clear-ccache
+          
       - name: "github.event.inputs.clear-ccache == 'true'"
-        if: ${{ github.event.inputs.clear-ccache }}
+        if: ${{ github.event.inputs.clear-ccache == 'true' }}
+        run: |
+          echo github.event.inputs.clear-ccache
+          
+      - name: "github.event.inputs.clear-ccache != 'false'"
+        if: ${{ github.event.inputs.clear-ccache != 'false' }}
+        run: |
+          echo github.event.inputs.clear-ccache
+      
+      - name: "github.event.inputs.clear-ccache != 'true'"
+        if: ${{ github.event.inputs.clear-ccache != 'true' }}
         run: |
           echo github.event.inputs.clear-ccache
 
