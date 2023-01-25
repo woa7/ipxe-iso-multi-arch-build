@@ -47,7 +47,7 @@ jobs:
           echo "MAKE_OPT=-j $((`nproc`+0))" >> $GITHUB_ENV
           echo "MAKE_OPT2=-j 3" >> $GITHUB_ENV
           echo "MAKE_OPT3=$((`nproc`+0))" >> $GITHUB_ENV
-          echo "lsb_release-s-c=$(`lsb_release --short --codename`)" >> $GITHUB_ENV
+          echo "lsb_release-s-c=$(lsb_release --short --codename)" >> $GITHUB_ENV
 
       - name: echo path
         run: |
