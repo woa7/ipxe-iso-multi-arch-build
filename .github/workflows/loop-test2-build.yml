@@ -19,10 +19,9 @@ on:
 #        required: false 
 #        type: boolean
       clear-ccache:
-        description: 'clear ccache cache with ccache --clear '     
+        description: 'clear ccache cache with ccache --clear'     
         required: false 
         type: boolean
-      if: ${{ github.event.inputs.clear-docker-cache }}
       no-cache-save-apt:
         description: 'disabel cache-save-apt save and restore'     
         required: false 
