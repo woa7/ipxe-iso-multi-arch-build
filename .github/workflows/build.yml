@@ -59,14 +59,16 @@ jobs:
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind
-      - name: ccache
+
+      - name: install ccache
         uses: hendrikmuhs/ccache-action@v1.2.8
         with:
-          key: ${{ matrix.os }}-${{ matrix.type }}
+          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           # max-size: 500M # Max size of the cache, default: 500M
           # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+
       - name: Build (BIOS)
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -96,14 +98,16 @@ jobs:
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-arm-none-eabi
-      - name: ccache
+
+      - name: install ccache
         uses: hendrikmuhs/ccache-action@v1.2.8
         with:
-          key: ${{ matrix.os }}-${{ matrix.type }}
+          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           # max-size: 500M # Max size of the cache, default: 500M
           # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+
       - name: Build
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -128,14 +132,16 @@ jobs:
           sudo apt update
           sudo apt install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
-      - name: ccache
+
+      - name: install ccache
         uses: hendrikmuhs/ccache-action@v1.2.8
         with:
-          key: ${{ matrix.os }}-${{ matrix.type }}
+          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           # max-size: 500M # Max size of the cache, default: 500M
           # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+
       - name: Build
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
