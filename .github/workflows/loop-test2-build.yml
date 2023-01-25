@@ -23,11 +23,11 @@ on:
         required: false
         type: boolean
       make-everything:
-        description: 'make -C src everything'
+        description: 'make everything'
         required: false
         type: boolean
       make-everything-arm:
-        description: 'make -C src everything CROSS aarch64-linux-gnu'
+        description: 'make everything CROSS aarch64 linux gnu'
         required: false
         type: boolean
       no-cache-save-apt:
