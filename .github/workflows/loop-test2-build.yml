@@ -101,6 +101,7 @@ jobs:
         id: cache-apt-restore
         with:
           path: /var/cache/apt/archives/**.deb
+          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
           restore-keys: |
             cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
             cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-
