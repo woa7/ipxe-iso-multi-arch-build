@@ -47,7 +47,12 @@ jobs:
           echo "MAKE_OPT=-j $((`nproc`+0))" >> $GITHUB_ENV
           echo "MAKE_OPT2=-j 3" >> $GITHUB_ENV
           echo "MAKE_OPT3=$((`nproc`+0))" >> $GITHUB_ENV
-          echo "lsb_release-s-c=$(lsb_release --short --codename)" >> $GITHUB_ENV
+          echo "LSB_RELEASE_SC=$(lsb_release --short --codename)" >> $GITHUB_ENV
+          apt-config dump
+
+      - name: grep -R -v adfqefoo /etc/apt/*
+        run: |
+          grep -R -v adfqefoo /etc/apt/*
 
       - name: echo path
         run: |
@@ -79,8 +84,8 @@ jobs:
         with:
           path: /var/cache/apt/archives/*.deb
           #key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
-          restore-keys: ${{ runner.os }}-${{ env.lsb_release-s-c }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-
-          key: ${{ runner.os }}-${{ env.lsb_release-s-c }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
+          restore-keys: cache-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-
+          key: cache-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
           #key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install packages
@@ -266,4 +271,4 @@ jobs:
         if: always() # or any other condition to invoke the save action
         with:
           path: /var/cache/apt/archives/*.deb
-          key: ${{ runner.os }}-${{ env.lsb_release-s-c }}-${{ matrix.ghc }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
+          key: cache-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
