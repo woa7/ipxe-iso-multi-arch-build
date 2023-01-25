@@ -67,6 +67,8 @@ jobs:
           env
           echo "############################"
           apt-config dump
+          ls -lah /var/cache/apt/archives/*.deb
+          echo "${{ hashFiles('/var/cache/apt/archives/*.deb') }}"
     
       - name: Check out code
         uses: actions/checkout@v3
@@ -100,10 +102,10 @@ jobs:
       - uses: actions/cache/restore@v3.2.3
         id: cache-apt-restore
         with:
-          path: /var/cache/apt/archives/**.deb
-          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+          path: "/var/cache/apt/archives/*.deb"
+          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
           restore-keys: |
-            cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+            cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
             cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-
             cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-
           #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
