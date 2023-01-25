@@ -134,7 +134,7 @@ jobs:
 
       - name: find iso fils
         run: |
-          set -vx
+          #set -vx
           echo "############################"
           find . \( \
             -regex ".*\.pxe\|.*\.efi\|.*\.kpxe\|.*\.kkpxe\|.*\.lkrn\|.*\.iso\|.*\.hd\|.*\.dsk\|.*\.pdsk\|.*\.usb\|.*\.vhd" \
@@ -163,14 +163,14 @@ jobs:
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-i386-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           cd src && ./util/genfsimg -o ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso \
-                            bin-x86_64-efi/ipxe.efi \
-                            bin-i386-efi/ipxe.efi \
-                            bin-arm64-efi/ipxe.efi \
-                           # bin-arm32-efi/intel.efi \
-                            bin-arm32-efi/snp.efi \
-                           # bin-arm32-efi/snponly.efi \
-                            bin/ipxe.lkrn
-                    ||  ./util/genfsimg -o ipxe-bios__x86_64-efi__arm64-efi__i386-efi__arm32-efi__any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
+          bin-x86_64-efi/ipxe.efi \
+          bin-i386-efi/ipxe.efi \
+          bin-arm64-efi/ipxe.efi \
+          # bin-arm32-efi/intel.efi \
+          bin-arm32-efi/snp.efi \
+          # bin-arm32-efi/snponly.efi \
+          bin/ipxe.lkrn \
+          ||  ./util/genfsimg -o ipxe-bios__x86_64-efi__arm64-efi__i386-efi__arm32-efi__any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
 
       #- name: Build ARM64
       #  run: |
@@ -189,7 +189,7 @@ jobs:
       - name: Build ISO
         run: |
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
+          #find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
           bin-x86_64-efi/ipxe.efi \
