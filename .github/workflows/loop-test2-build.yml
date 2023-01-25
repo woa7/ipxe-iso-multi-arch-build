@@ -90,11 +90,24 @@ jobs:
           set -x
           sudo chown --verbose "$USER:" /var/cache/apt/archives
           #sudo chown --verbose "$USER:" /var/cache/apt/archives/*.deb
-      - uses: actions/cache/restore@v3
+# https://github.com/actions/cache#creating-a-cache-key
+# http://man7.org/linux/man-pages/man1/date.1.html
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        shell: bash
+      - uses: actions/cache/restore@v3.2.3
         id: cache-apt-restore
         with:
           path: /var/cache/apt/archives/**.deb
-          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+          restore-keys: |
+            cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+            cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-
+            cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-
+          #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+          #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}-${{ steps.get-date.outputs.date }}
+          #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
       - name: sudo chown --verbose "root:" /var/cache/apt/archives
         run: |
           set -x
@@ -292,10 +305,11 @@ jobs:
 #          valgrind ./src/bin-i386-linux/tests.linux
 #          valgrind ./src/bin-x86_64-linux/tests.linux
 
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@v3.2.3
         ###id: cache-apt-save
         ###if: always() # or any other condition to invoke the save action
         with:
           path: /var/cache/apt/archives/*.deb
-          key: ${{ steps.cache-apt-restore.outputs.cache-primary-key }}
+          key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('/var/cache/apt/archives/**.deb') }}
+          #key: ${{ steps.cache-apt-restore.outputs.cache-primary-key }}
           #key: cache-save-apt-${{ runner.os }}-${{ env.LSB_RELEASE_SC }}-${{ matrix.ghc }}-${{ matrix.os }}-${{ matrix.type }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
