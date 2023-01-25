@@ -19,20 +19,20 @@ on:
 #        required: false 
 #        type: boolean
       clear-ccache:
-        description: 'clear ccache cache with ccache --clear'     
-        required: false 
+        description: 'clear ccache cache with ccache clear'
+        required: false
         type: boolean
       make-everything:
-        description: 'make -C src everything'     
-        required: false 
+        description: 'make -C src everything'
+        required: false
         type: boolean
       make-everything-arm:
-        description: 'make -C src everything CROSS=aarch64-linux-gnu-'     
-        required: false 
+        description: 'make -C src everything CROSS aarch64-linux-gnu'
+        required: false
         type: boolean
       no-cache-save-apt:
-        description: 'disabel cache-save-apt save and restore'     
-        required: false 
+        description: 'disabel cache-save-apt save and restore'
+        required: false
         type: boolean
 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
