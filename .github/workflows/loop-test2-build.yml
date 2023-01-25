@@ -43,7 +43,7 @@ jobs:
   
       - name: link eatmydata to make, add ccache to path, set MAKE_OPT with nproc
         run: |
-          ln -s /usr/bin/eatmydata /usr/local/bin/make
+          echo FOO ln -s /usr/bin/eatmydata /usr/local/bin/make
           #echo "$HOME/.local/bin" >> $GITHUB_PATH
           echo "/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
           echo "MAKE_OPT=-j $((`nproc`+0))" >> $GITHUB_ENV
@@ -83,7 +83,7 @@ jobs:
       - name: link eatmydata to make
         run: |
           if [ -a /usr/bin/eatmydata ] && [ !-e /usr/bin/eatmydata ]; then
-             ln -s /usr/bin/eatmydata /usr/local/bin/make
+             echo FOO ln -s /usr/bin/eatmydata /usr/local/bin/make
           fi
 #          ln -s /usr/bin/eatmydata /usr/local/bin/make
 
