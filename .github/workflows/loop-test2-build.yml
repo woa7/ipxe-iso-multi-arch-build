@@ -217,12 +217,21 @@ jobs:
           ccache --verbose --clear
           ccache --show-compression --show-stats
 
-      - name: run Build (Everything)
+      - name: run Build (Everything) pre build
+        #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
+        if: ${{ github.event.inputs.make-everything == 'true'}}
+        run: |
+          make ${{ env.MAKE_OPT }} -C src
+#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+
+      - name: run Build (Everything) full build
         #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
         if: ${{ github.event.inputs.make-everything == 'true'}}
         run: |
           make ${{ env.MAKE_OPT }} -C src everything
 #          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+
+
 
 # https://github.com/ipxe/ipxe/discussions/614#discussioncomment-2363937          
 # @mcb30 on Mar 15, 2022
