@@ -169,7 +169,7 @@ jobs:
           
       - name: run clear-ccache
         #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
-        if: ${{ github.event.inputs.clear-ccache }}
+        if: ${{ github.event.inputs.clear-ccache == 'true' }}
         run: |
           set -x
           ccache --show-compression --show-stats
@@ -178,7 +178,7 @@ jobs:
 
       - name: run Build (Everything)
         #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
-        if: ${{ github.event.inputs.make-everything }}
+        if: ${{ github.event.inputs.make-everything == 'true'}}
         run: |
           make ${{ env.MAKE_OPT }} -C src everything
 #          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
