@@ -56,8 +56,8 @@ jobs:
           echo "LSB_RELEASE_SC=$(lsb_release --short --codename)" >> $GITHUB_ENV
           
       - name: Binary::apt::APT::Keep-Downloaded-Packages "true" /etc/apt/apt.conf.d/01keep-debs
+        if: ${{ inputs.no-cache-save-apt != 'true' }}
         run: |
-          if: ${{ inputs.no-cache-save-apt != 'true' }}
           # https://superuser.com/questions/1405001/why-does-apt-do-not-store-downloaded-packages-anymore
           echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' | sudo tee /etc/apt/apt.conf.d/01keep-debs
           #echo 'APT::Keep-Downloaded-Packages "true";' | sudo tee -a /etc/apt/apt.conf.d/01keep-debs
