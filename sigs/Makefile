@@ -60,7 +60,8 @@ SOURCES=\
 	$(IPXE) $(IPXEBIN) \
 	memdisk \
 	pxelinux.0 pxelinux.cfg/pxelinux.0 pxelinux.cfg/lpxelinux.0 \
-	$(shell cd ..; echo images/*.* images/pcmemtest/* images/mt86plus/*) \
+	$(shell cd ..; echo images/*.* images/pcmemtest/* \
+		images/mt86plus/*.* images/mt86plus/*/*/*) \
 	$(FEDORA) \
 	$(CENTOS) $(CENTOS_VAULT) $(CENTOS_i386) \
 	$(ALMALINUX) \
