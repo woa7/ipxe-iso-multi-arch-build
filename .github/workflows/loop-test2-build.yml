@@ -201,7 +201,7 @@ jobs:
                            libc6-dev-i386 libc6-dbg:i386 valgrind \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.8
+        uses: hendrikmuhs/ccache-action@v1.2.9
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
