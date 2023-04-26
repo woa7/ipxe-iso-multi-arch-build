@@ -201,19 +201,24 @@ jobs:
                            libc6-dev-i386 libc6-dbg:i386 valgrind \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.9
+        uses: berlin4apk/ccache-action@v1.2.107
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-          # max-size: 500M # Max size of the cache, default: 500M
-          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          max-size: 1000M # Max size of the cache, default: 500M
+          compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
+          install-from-github: true
+          variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+          # ccache-dir: "~/.ccache"
+          # dont-do-config: false
           
       - name: run clear-ccache
         #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
         if: ${{ github.event.inputs.clear-ccache == 'true' }}
         run: |
           set -x
+          ccache --show-config
           ccache --show-compression --show-stats
           ccache --verbose --clear
           ccache --show-compression --show-stats
@@ -223,14 +228,14 @@ jobs:
         if: ${{ github.event.inputs.make-everything == 'true'}}
         run: |
           make ${{ env.MAKE_OPT }} -C src
-#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
 
       - name: run Build (Everything) full build
         #if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
         if: ${{ github.event.inputs.make-everything == 'true'}}
         run: |
           make ${{ env.MAKE_OPT }} -C src everything
-#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
 
 
 
@@ -251,13 +256,13 @@ jobs:
 #          make -j $((`nproc`+0)) -C src
       - name: Build 1   bin/ipxe.lkrn   bin-x86_64-efi/ipxe.efi
         run: |
-          ###export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          ###export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make ${{ env.MAKE_OPT }} -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
 #make -j $((`nproc`+1)) -C src bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi
 
       - name: Build 2   bin-i386-efi/ipxe.efi
         run: |
-          ###export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          ###export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make ${{ env.MAKE_OPT }} -C src bin-i386-efi/ipxe.efi
 #make -j $((`nproc`+1)) -C src bin-i386-efi/ipxe.efi
 
@@ -284,13 +289,13 @@ jobs:
 
       - name: Build 3   bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
         run: |
-          ###export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          ###export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make ${{ env.MAKE_OPT }} -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
 #make -j $((`nproc`+1)) -C src bin-arm64-efi/ipxe.efi CROSS=aarch64-linux-gnu-
           
       - name: Build 4   genfsimg ipxe-bios_x86_64-efi_arm64-efi.iso
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           cd src && ./util/genfsimg -o ipxe-bios_x86_64-efi_arm64-efi.iso bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi \
                     ||  ./util/genfsimg -o ipxe-bios_x86_64-efi_arm64-efi-any.iso bin/ipxe.lkrn bin-*-efi/ipxe.efi 
@@ -305,13 +310,13 @@ jobs:
 
       - name: Build 5   bin-i386-efi/ipxe.efi
         run: |
-          ###export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          ###export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make ${{ env.MAKE_OPT }} -C src bin-i386-efi/ipxe.efi
 #make -j $((`nproc`+0)) -C src bin-i386-efi/ipxe.efi
 
       - name: Build 6   bin-arm32-efi/intel.efi bin-arm32-efi/snp.efi bin-arm32-efi/snponly.efi
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
           make ${{ env.MAKE_OPT }} -C src CROSS=arm-none-eabi- \
           bin-arm32-efi/snp.efi
@@ -348,7 +353,7 @@ jobs:
       - name: Build 7   genfsimg ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso
         run: |
           set -vx
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #cd src && ./util/genfsimg -o ipxe-bios-i386-arm32-arm64-arch.iso -s menu.ipxe bin/ipxe.lkrn bin-x86_64-efi/ipxe.efi bin-arm64-efi/ipxe.efi
           cd src && ./util/genfsimg -o ipxe-bios__x86_64-efi__i386-efi__arm64-efi__arm32-efi.iso \
           bin/ipxe.lkrn \
@@ -377,7 +382,7 @@ jobs:
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: Build ISO
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           #find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
@@ -398,11 +403,11 @@ jobs:
 #      - name: Build (Everything)
 #        run: |
 #          make ${{ env.MAKE_OPT }} -C src everything
-#          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+#          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           
       # NOT working# - name: Build valgrind Tests
       # NOT working#         run: |
-      # NOT working#           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+      # NOT working#           export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
       # NOT working#           make -j $((`nproc`+1)) -C src bin-i386-linux/tests.linux bin-x86_64-linux/tests.linux
           
 #      - name: valgrind Tests
