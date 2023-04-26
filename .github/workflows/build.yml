@@ -61,7 +61,7 @@ jobs:
                            libc6-dev-i386 libc6-dbg:i386 valgrind
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.8
+        uses: hendrikmuhs/ccache-action@v1.2.9
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
@@ -100,7 +100,7 @@ jobs:
                            mtools syslinux isolinux gcc-arm-none-eabi
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.8
+        uses: hendrikmuhs/ccache-action@v1.2.9
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
@@ -134,7 +134,7 @@ jobs:
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.8
+        uses: hendrikmuhs/ccache-action@v1.2.9
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
