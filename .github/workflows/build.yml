@@ -61,21 +61,25 @@ jobs:
                            libc6-dev-i386 libc6-dbg:i386 valgrind
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.9
+        uses: berlin4apk/ccache-action@v1.2.107
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-          # max-size: 500M # Max size of the cache, default: 500M
-          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          max-size: 1000M # Max size of the cache, default: 500M
+          compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
+          install-from-github: true
+          variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+          # ccache-dir: "~/.ccache"
+          # dont-do-config: false
 
       - name: Build (BIOS)
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src
       - name: Build (Everything)
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src everything
       - name: Test
         run: |
@@ -100,17 +104,21 @@ jobs:
                            mtools syslinux isolinux gcc-arm-none-eabi
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.9
+        uses: berlin4apk/ccache-action@v1.2.107
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-          # max-size: 500M # Max size of the cache, default: 500M
-          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          max-size: 1000M # Max size of the cache, default: 500M
+          compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
+          install-from-github: true
+          variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+          # ccache-dir: "~/.ccache"
+          # dont-do-config: false
 
       - name: Build
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src CROSS=arm-none-eabi- \
                bin-arm32-efi/intel.efi \
                bin-arm32-efi/intel.usb \
@@ -134,17 +142,21 @@ jobs:
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
 
       - name: install ccache
-        uses: hendrikmuhs/ccache-action@v1.2.9
+        uses: berlin4apk/ccache-action@v1.2.107
         with:
           key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-          # max-size: 500M # Max size of the cache, default: 500M
-          # variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
+          max-size: 1000M # Max size of the cache, default: 500M
+          compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
+          install-from-github: true
+          variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
+          # ccache-dir: "~/.ccache"
+          # dont-do-config: false
 
       - name: Build
         run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j 4 -C src CROSS=aarch64-linux-gnu- \
                bin-arm64-efi/ipxe.efi \
                bin-arm64-efi/ipxe.usb \
