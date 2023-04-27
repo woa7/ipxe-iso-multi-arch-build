@@ -16,6 +16,19 @@ on:
         description: 'clear docker cache with rm -fr /tmp/.buildx-cache /tmp/.buildx-cache-old /tmp/.buildx-cache-new'     
         required: false 
         type: boolean
+        
+      build-with-CCACHE:
+        description: 'build with build-with-CCACHE'     
+        required: false 
+        type: boolean
+        default: false
+        
+      build-with-SCCACHE:
+        description: 'SCCACHE build'     
+        required: false 
+        type: boolean
+        default: true
+        
 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
@@ -42,6 +55,47 @@ jobs:
                            mtools syslinux isolinux \
                            libc6-dev-i386 libc6-dbg:i386 valgrind \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
+                           
+
+      - name: "build-with-SCCACHE != 'true'"
+        if: ${{ build-with-SCCACHE != 'true' }}
+        run: |
+          echo build-with-SCCACHE
+          
+        # https://github.com/Mozilla-Actions/sccache-action
+      - name: Run sccache-cache
+        if: ${{ build-with-SCCACHE == 'true' }}
+        uses: mozilla-actions/sccache-action@v0.0.3
+        with:
+          version: "v0.4.0"
+      - name: Run sccache stat for check
+        if: ${{ build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+
+        # For C/C++ code, the following environment variables should be set:
+    if: ${{ build-with-SCCACHE == 'true' }}
+      - env:
+          SCCACHE_GHA_ENABLED: "true"
+          CC: "sccache gcc"
+          CXX: "sccache gcc"
+        # With cmake, add the following argument:
+        # -DCMAKE_C_COMPILER_LAUNCHER=sccache
+        # -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        # With gcc / configure, call it with:
+        # ./configure CC="sccache gcc" CXX="sccache gcc"
+        #  With clang
+        #  ./configure CC="sccache clang" CXX="sccache clang"
+      - name: build test.c
+        run: |
+          cat <<EOF > test.c
+          #include <stdio.h>
+          void foo() {
+          printf("hello world\n");
+          }
+          EOF
+
+
       - name: install ccache
         uses: berlin4apk/ccache-action@dev
         with:
