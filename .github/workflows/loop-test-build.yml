@@ -75,7 +75,7 @@ jobs:
 
         # For C/C++ code, the following environment variables should be set:
       - env:
-        if: ${{ build-with-SCCACHE == 'true' }}
+        ###FIX ME #### if: ${{ build-with-SCCACHE == 'true' }}
           SCCACHE_GHA_ENABLED: "true"
           CC: "sccache gcc"
           CXX: "sccache gcc"
@@ -95,26 +95,27 @@ jobs:
           }
           EOF
           
-        - name: Add sccache warpe
-          if: ${{ build-with-SCCACHE == 'true' }}r
-         run: |
-         # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
-           echo build-with-SCCACHE
-cat <<EOF > /usr/local/bin/CC
-#!/bin/sh
-#exec ccache "${TARGET_CC_NOCACHE}" "$@"
-exec SCCACHE_GHA_ENABLED=true SCCACHE_ERROR_LOG=/tmp/sccache_log.txt SCCACHE_LOG=debug sccache gcc "$@"
-EOF
-chmod 755 /usr/local/bin/CC
-cat <<EOF > /usr/local/bin/CXX
-#!/bin/sh
-#exec ccache "${TARGET_CXX_NOCACHE}" "$@"
-exec SCCACHE_GHA_ENABLED=true SCCACHE_ERROR_LOG=/tmp/sccache_log.txt SCCACHE_LOG=debug sccache g++ "$@"
-EOF
-chmod 755 /usr/local/bin/CXX
-sccache --start-server
+      - name: Add sccache warper
+        if: ${{ build-with-SCCACHE == 'true' }}
+        run: |
+          # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
+          echo build-with-SCCACHE
+          cat <<EOF > /usr/local/bin/CC
+          #!/bin/sh
+          #exec ccache "${TARGET_CC_NOCACHE}" "$@"
+          exec SCCACHE_GHA_ENABLED=true SCCACHE_ERROR_LOG=/tmp/sccache_log.txt SCCACHE_LOG=debug sccache gcc "$@"
+          EOF
+          chmod 755 /usr/local/bin/CC
+          cat <<EOF > /usr/local/bin/CXX
+          #!/bin/sh
+          #exec ccache "${TARGET_CXX_NOCACHE}" "$@"
+          exec SCCACHE_GHA_ENABLED=true SCCACHE_ERROR_LOG=/tmp/sccache_log.txt SCCACHE_LOG=debug sccache g++ "$@"
+          EOF
+          chmod 755 /usr/local/bin/CXX
+          sccache --start-server
 
       - name: install ccache
+        if: ${{ build-with-CCACHE == 'true' }}
         uses: berlin4apk/ccache-action@dev
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
