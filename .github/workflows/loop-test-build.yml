@@ -73,9 +73,9 @@ jobs:
         shell: bash
         run: ${SCCACHE_PATH} --show-stats
 
-      - name: For C/C++ code, the following environment variables should be set:
-      - env:
-        ${{ build-with-SCCACHE == 'true' }}
+      - name: For C/C++ code, the following environment variables should be set
+        if:  ${{ build-with-SCCACHE == 'true' }}
+        env:
           SCCACHE_GHA_ENABLED: "true"
           CC: "sccache gcc"
           CXX: "sccache gcc"
