@@ -151,7 +151,7 @@ jobs:
           exec SCCACHE_GHA_ENABLED=true SCCACHE_ERROR_LOG=/tmp/sccache_log.txt SCCACHE_LOG=debug sccache g++ "$@"
           EOF
           chmod 755 /usr/local/bin/CXX
-          sccache --start-server
+          sccache --start-server ||:
 
       - name: install ccache
         if: ${{ env.build-with-CCACHE == 'true' }}
