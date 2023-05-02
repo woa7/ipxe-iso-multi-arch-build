@@ -314,30 +314,30 @@ jobs:
           valgrind ./src/bin-i386-linux/tests.linux
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
-      - name: ssh
-#        if: ${{ env.ryanchapman-gha-ssh == 'true' }}
-        continue-on-error: false
-        if: ${{ failure() }}
-        #if: ${{ true() }}
-        #continue-on-error: true
-        uses: ryanchapman/gha-ssh@v1
-      # after the container starts tmate in the background, it will
-      # sleep for 24 hours, so it's important that you set a timeout here
-      # so you doif: ${{ failure() }}n't run up your GitHub Actions bill
-        timeout-minutes: 10
-        with:
-        # authorized_github_users: required
-        # List of GitHub users who are allowed to ssh into container.
-        # On gha-ssh container start, it downloads the ssh public key(s) for each
-        # user from GitHub and places it in ~/authorized_keys
-        # tmate is started with `-a ~/authorized_keys` to only allow access
-        # to users with possession of the corresponding private ssh keys.
-          #authorized_github_users: 'johndoe,janedoe'
-          authorized_github_users: 'woa7'
-        # debug: optional
-        # defaults to `false` if not set here
-        # if debug is set, then tmate is started with `-vvv -F`
-          debug: true
+#      - name: ssh
+##        if: ${{ env.ryanchapman-gha-ssh == 'true' }}
+#        continue-on-error: false
+#        if: ${{ failure() }}
+#        #if: ${{ true() }}
+#        #continue-on-error: true
+#        uses: ryanchapman/gha-ssh@v1
+#      # after the container starts tmate in the background, it will
+#      # sleep for 24 hours, so it's important that you set a timeout here
+#      # so you doif: ${{ failure() }}n't run up your GitHub Actions bill
+#        timeout-minutes: 10
+#        with:
+#        # authorized_github_users: required
+#        # List of GitHub users who are allowed to ssh into container.
+#        # On gha-ssh container start, it downloads the ssh public key(s) for each
+#        # user from GitHub and places it in ~/authorized_keys
+#        # tmate is started with `-a ~/authorized_keys` to only allow access
+#        # to users with possession of the corresponding private ssh keys.
+#          #authorized_github_users: 'johndoe,janedoe'
+#          authorized_github_users: 'woa7'
+#        # debug: optional
+#        # defaults to `false` if not set here
+#        # if debug is set, then tmate is started with `-vvv -F`
+#          debug: true
       - name: foo run
         run: |
           echo foo
