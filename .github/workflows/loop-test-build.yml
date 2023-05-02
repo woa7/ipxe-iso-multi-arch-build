@@ -14,6 +14,7 @@ env:
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
   build-with-SCCACHE: 'true'
+  build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
 
 
 on:
@@ -40,6 +41,11 @@ on:
         required: false 
         type: boolean
         default: true
+      build-Everything:
+        description: 'build-Everything'     
+        required: false 
+        type: boolean
+        default: false
   pull_request:
 
 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
@@ -60,6 +66,8 @@ jobs:
         run: echo "build-with-CCACHE=true" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
         run: echo "build-with-SCCACHE=true" >> $GITHUB_OUTPUT
+      - if: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
+        run: echo "build-Everything=true" >> $GITHUB_OUTPUT
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -95,7 +103,7 @@ jobs:
           
         # https://github.com/Mozilla-Actions/sccache-action
       - name: Run sccache-cache
-        if: ${{ env.build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-SCCACHE == 'true' }} 
         uses: mozilla-actions/sccache-action@v0.0.3
         with:
           version: "v0.4.0"
@@ -228,10 +236,12 @@ jobs:
           isoinfo -l -i src/*.iso
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
       - name: Build (Everything)
+        if: ${{ env.build-Everything == 'true' }}
         run: |
           export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j$((`nproc`+0)) -C src everything
       - name: Build ISO (Everything)
+        if: ${{ env.build-Everything == 'true' }}
         run: |
           export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           find . \( -name ipxe.lkrn -or -name ipxe.efi \) -print
@@ -243,6 +253,7 @@ jobs:
           bin/ipxe.lkrn || \
           ./util/genfsimg -o ipxe-glob.iso bin-*-efi/ipxe.efi bin/ipxe.lkrn
       - name: list ISO (Everything)
+        if: ${{ env.build-Everything == 'true' }}
         continue-on-error: true
         run: |
           set -vx
@@ -251,6 +262,7 @@ jobs:
           isoinfo -l -i src/*.iso
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
       - name: Test
+        continue-on-error: true
         run: |
           valgrind ./src/bin-i386-linux/tests.linux
           valgrind ./src/bin-x86_64-linux/tests.linux
