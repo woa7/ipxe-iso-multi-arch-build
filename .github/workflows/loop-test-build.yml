@@ -329,7 +329,7 @@ jobs:
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
       - name: ssh
-        if: ${{ false && env.ryanchapman-gha-ssh == 'true' }}
+        if: ${{ env.ryanchapman-gha-ssh == 'true' }}
         continue-on-error: false
         #if: ${{ failure() }}
         #if: ${{ true() }}
