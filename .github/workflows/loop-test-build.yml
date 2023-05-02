@@ -157,30 +157,11 @@ jobs:
       - name: Add sccache warper1
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
-          # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
-          echo build-with-SCCACHE
-          # see https://github.com/mozilla/sccache/issues/1155#issuecomment-1097557677
-          sudo mkdir -p /usr/lib/sccache/
-          cat <<EOS | sudo tee /usr/lib/sccache/sccache-wrapper
-          #!/usr/bin/bash
-          SCCACHE_BIN="$(command -v sccache )"
-          $(dirname "$0")
-          for COMPILER in "c++" "c89" "c99" "cc" "clang" "clang++" "cpp" "g++" "gcc" "rustc" "x86_64-pc-linux-gnu-c++" "x86_64-pc-linux-gnu-cc" "x86_64-pc-linux-gnu-g++" "x86_64-pc-linux-gnu-gcc" "arm-none-eabi-c++" "arm-none-eabi-cc" "arm-none-eabi-g++" "arm-none-eabi-gcc" "aarch64-linux-gnu-c++" "aarch64-linux-gnu-cc" "aarch64-linux-gnu-g++" "aarch64-linux-gnu-gcc" "arm-none-eabi-c++" "arm-none-eabi-cc" "arm-none-eabi-g++" "arm-none-eabi-gcc"; do
-            cat > "./${COMPILER}" <<-EOF
-            #!/bin/bash
-            SCCACHE_WRAPPER_BINDIR="\$(dirname \${BASH_SOURCE[0]})"  # Intentionally don't resolve symlinks
-            PATH=\${PATH//":\$SCCACHE_WRAPPER_BINDIR:"/":"} # delete any instances in the middle
-            PATH=\${PATH/#"\$SCCACHE_WRAPPER_BINDIR:"/} # delete any instance at the beginning
-            PATH=\${PATH/%":\$SCCACHE_WRAPPER_BINDIR"/} # delete any instance in the at the end
-            # /usr/bin/sccache ${COMPILER} "\$@"
-            ${SCCACHE_BIN} ${COMPILER} "\$@"
-              EOF
-              chmod 755 "./${COMPILER}"
-            done
-          EOS
-          sudo chmod 755 /usr/lib/sccache/sccache-wrapper
-          sudo /usr/lib/sccache/sccache-wrapper
-          ls -latr /usr/lib/sccache/ ||:
+          [[ -e update-sccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/dev/src/update-sccache-symlinks.sh
+          sudo chmod 755 update-sccache-symlinks.sh
+          sudo bash ./update-sccache-symlinks.sh
+          # [[ -e update-sccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/v1.2.105/src/update-ccache-symlinks.sh
+          # echo "9ba51f7f4983817980c4173282dd09cdba6b5d81d087852831d9ecb69a6cf7ad *update-ccache-symlinks.sh" | sha256sum -c -
 ###          echo "/usr/lib/sccache" >> $GITHUB_PATH
           
       - name: Add sccache warper2
