@@ -209,10 +209,12 @@ jobs:
         if: ${{ env.build-with-CCACHE == 'true' }}
         run: |
           echo "/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
-      - name: Add ccache /usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec to GITHUB_PATH
+      #- name: Add ccache /usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec to GITHUB_PATH
+      - name: Add sccache /usr/local/lib/sccache to GITHUB_PATH
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
-          echo "/usr/local/lib/sccache:/usr/lib/sccache:/usr/local/opt/sccache/libexec" >> $GITHUB_PATH
+          #echo "/usr/local/lib/sccache:/usr/lib/sccache:/usr/local/opt/sccache/libexec" >> $GITHUB_PATH
+          echo "/usr/local/lib/sccache" >> $GITHUB_PATH
       - name: echo PATH
         run: |
           echo "$PATH"
