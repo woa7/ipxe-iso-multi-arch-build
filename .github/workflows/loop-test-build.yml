@@ -49,13 +49,13 @@ jobs:
     name: x86-loop-test
     runs-on: ubuntu-20.04
     steps:
-#      # FIXME BUG see https://github.com/actions/runner/issues/1483
-#      - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-#        run: echo "CLEAR-DOCKER-CACHE=true" >> $GITHUB_OUTPUT
-#      - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-#        run: echo "BUILD-WITH-CCACHE=true" >> $GITHUB_OUTPUT
-#      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-#        run: echo "BUILD-WITH-SCCACHE=true" >> $GITHUB_OUTPUT
+      # FIXME BUG see https://github.com/actions/runner/issues/1483
+      - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
+        run: echo "CLEAR-DOCKER-CACHE=true" >> $GITHUB_OUTPUT
+      - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
+        run: echo "BUILD-WITH-CCACHE=true" >> $GITHUB_OUTPUT
+      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+        run: echo "BUILD-WITH-SCCACHE=true" >> $GITHUB_OUTPUT
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
