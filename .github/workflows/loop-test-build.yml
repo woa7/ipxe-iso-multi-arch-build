@@ -4,16 +4,16 @@ name: loop-test-build
 
 env:
 # settings DEFAULTS
-#  CLEAR-DOCKER-CACHE: ${{ github.event.inputs.clear-docker-cache }}
-#  CLEAR-DOCKER-CACHE: ${{ inputs.backport_release == false && inputs.release_candidate == false }}
-#  CLEAR-DOCKER-CACHE: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-  CLEAR-DOCKER-CACHE: 'false'
-#  BUILD-WITH-CCACHE: ${{ github.event.inputs.build-with-CCACHE }}
-#  BUILD-WITH-CCACHE: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-  BUILD-WITH-CCACHE: 'false'
-#  BUILD-WITH-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
-#  BUILD-WITH-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-  BUILD-WITH-SCCACHE: 'true'
+#  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache }}
+  clear-docker-cache: ${{ inputs.backport_release == false && inputs.release_candidate == false }}
+#  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
+#  clear-docker-cache: 'false'
+#  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE }}
+  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
+#  build-with-CCACHE: 'false'
+#  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
+#  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+  build-with-SCCACHE: 'true'
 
 
 on:
@@ -55,11 +55,11 @@ jobs:
     steps:
       # FIXME BUG see https://github.com/actions/runner/issues/1483
       - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-        run: echo "CLEAR-DOCKER-CACHE=true" >> $GITHUB_OUTPUT
+        run: echo "clear-docker-cache=true" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-        run: echo "BUILD-WITH-CCACHE=true" >> $GITHUB_OUTPUT
+        run: echo "build-with-CCACHE=true" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-        run: echo "BUILD-WITH-SCCACHE=true" >> $GITHUB_OUTPUT
+        run: echo "build-with-SCCACHE=true" >> $GITHUB_OUTPUT
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -89,7 +89,7 @@ jobs:
           p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
 
       - name: "build-with-SCCACHE != 'true'"
-        if: ${{ env.build-with-SCCACHE != 'true' }}
+        if: ${{ env.BUILD-WITH-SCCACHE != 'true' }}
         run: |
           echo build-with-SCCACHE
           
