@@ -115,7 +115,7 @@ jobs:
         if: ${{ env.build-with-SCCACHE == 'true' }} 
         uses: mozilla-actions/sccache-action@v0.0.3
         with:
-          version: "v0.4.0"
+          version: "v0.4.2"
       - name: Run sccache stat for check
         if: ${{ env.build-with-SCCACHE == 'true' }}
         shell: bash
