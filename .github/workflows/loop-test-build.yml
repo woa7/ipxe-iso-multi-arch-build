@@ -47,11 +47,11 @@ jobs:
     steps:
       # FIXME BUG see https://github.com/actions/runner/issues/1483
       - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-        run: echo "CLEAR-DOCKER-CACHE=1" >> "$GITHUB_OUTPUT"
+        run: echo "CLEAR-DOCKER-CACHE=1" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-        run: echo "BUILD-WITH-CCACHE=1" >> "$GITHUB_OUTPUT"
+        run: echo "BUILD-WITH-CCACHE=1" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-        run: echo "BUILD-WITH-SCCACHE=1" >> "$GITHUB_OUTPUT"
+        run: echo "BUILD-WITH-SCCACHE=1" >> $GITHUB_OUTPUT
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -99,9 +99,9 @@ jobs:
       - name: For C/C++ code, the following environment variables should be set
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_OUTPUT"
-          echo "CC=sccache gcc" >> "$GITHUB_OUTPUT"
-          echo "CXX=sccache gcc" >> "$GITHUB_OUTPUT"
+          echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_OUTPUT
+          echo "CC=sccache gcc" >> $GITHUB_OUTPUT
+          echo "CXX=sccache gcc" >> $GITHUB_OUTPUT
       - name: export -p | grep CCACHE SCCACHE CC CXX
         ### if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
