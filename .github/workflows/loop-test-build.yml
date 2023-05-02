@@ -1,6 +1,13 @@
 ---
 #name: loop-test-build
 
+
+env:
+  CLEAR-DOCKER-CACHE: ${{ github.event.inputs.clear-docker-cache }}
+  BUILD-WITH-CCACHE: ${{ github.event.inputs.build-with-CCACHE }}
+  BUILD-WITH-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
+
+
 on:
   push:
   #  branches: [ master ]
@@ -34,11 +41,29 @@ permissions:
   contents: read
 
 jobs:
-
   x86:
     name: x86-loop-test
     runs-on: ubuntu-20.04
     steps:
+      # FIXME BUG see https://github.com/actions/runner/issues/1483
+      - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
+        run: echo "CLEAR-DOCKER-CACHE=1" >> "$GITHUB_OUTPUT"
+      - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
+        run: echo "BUILD-WITH-CCACHE=1" >> "$GITHUB_OUTPUT"
+      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+        run: echo "BUILD-WITH-SCCACHE=1" >> "$GITHUB_OUTPUT"
+#    
+#    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
+#      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
+#    - if: ${{ github.event.inputs.OPT_PACKAGE_ONLY && github.event.inputs.OPT_PACKAGE_ONLY != 'false' }}
+#      run: echo "OPT_PACKAGE_ONLY=1" >> $GITHUB_OUTPUT
+#    - if: ${{ github.event.inputs.OPT_PUSH_WHEN_FAIL && github.event.inputs.OPT_PUSH_WHEN_FAIL != 'false' }}
+#      run: echo "OPT_PUSH_WHEN_FAIL=1" >> $GITHUB_OUTPUT
+#    - if: ${{ github.event.inputs.OPT_IGNORE_ERRORS && github.event.inputs.OPT_IGNORE_ERRORS != 'false' }}
+#      run: echo "OPT_IGNORE_ERRORS=1" >> $GITHUB_OUTPUT
+#    - if: ${{ github.event.inputs.OPT_DEBUG && github.event.inputs.OPT_DEBUG != 'false' }}
+#      run: echo "OPT_DEBUG=1" >> $GITHUB_OUTPUT
+
       - name: Check out code
         uses: actions/checkout@v3
         with:
@@ -49,35 +74,42 @@ jobs:
         run: |
           sudo dpkg --add-architecture i386
           sudo apt update
-          sudo apt install 
+          sudo apt install \
           -y -o Acquire::Retries=50 \
           mtools syslinux isolinux \
           libc6-dev-i386 libc6-dbg:i386 valgrind \
           p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
-                           
 
       - name: "build-with-SCCACHE != 'true'"
-        if: ${{ build-with-SCCACHE != 'true' }}
+        if: ${{ env.build-with-SCCACHE != 'true' }}
         run: |
           echo build-with-SCCACHE
           
         # https://github.com/Mozilla-Actions/sccache-action
       - name: Run sccache-cache
-        if: ${{ build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-SCCACHE == 'true' }}
         uses: mozilla-actions/sccache-action@v0.0.3
         with:
           version: "v0.4.0"
       - name: Run sccache stat for check
-        if: ${{ build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-SCCACHE == 'true' }}
         shell: bash
         run: ${SCCACHE_PATH} --show-stats
 
       - name: For C/C++ code, the following environment variables should be set
-        if:  ${{ build-with-SCCACHE == 'true' }}
-        env:
-          SCCACHE_GHA_ENABLED: "true"
-          CC: "sccache gcc"
-          CXX: "sccache gcc"
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_OUTPUT"
+          echo "CC=sccache gcc" >> "$GITHUB_OUTPUT"
+          echo "CXX=sccache gcc" >> "$GITHUB_OUTPUT"
+      - name: export -p | grep CCACHE SCCACHE CC CXX
+        ### if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          export -p | grep -E "CCACHE|SCCACHE|CC|CXX|PATH"
+#        env:
+#          SCCACHE_GHA_ENABLED: "true"
+#          CC: "sccache gcc"
+#          CXX: "sccache gcc"
         # With cmake, add the following argument:
         # -DCMAKE_C_COMPILER_LAUNCHER=sccache
         # -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
@@ -95,7 +127,7 @@ jobs:
           EOF
           
       - name: Add sccache warper
-        if: ${{ build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
           echo build-with-SCCACHE
@@ -114,7 +146,7 @@ jobs:
           sccache --start-server
 
       - name: install ccache
-        if: ${{ build-with-CCACHE == 'true' }}
+        if: ${{ env.build-with-CCACHE == 'true' }}
         uses: berlin4apk/ccache-action@dev
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
@@ -194,7 +226,7 @@ jobs:
       - name: Build ISO (Everything)
         run: |
           export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          find . -name ipxe.lkrn -or -name ipxe.efi -print
+          find . \( -name ipxe.lkrn -or -name ipxe.efi \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
           bin-x86_64-efi/ipxe.efi \
