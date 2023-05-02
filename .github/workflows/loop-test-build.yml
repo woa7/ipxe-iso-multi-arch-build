@@ -1,5 +1,5 @@
 ---
-#name: loop-test-build
+name: loop-test-build
 
 
 env:
@@ -16,7 +16,6 @@ on:
     paths:
       - '!.github/workflows/**'
       - '.github/workflows/loop-test-build.yml'
-
   workflow_dispatch:
     inputs:
       clear-docker-cache:
@@ -33,7 +32,8 @@ on:
         required: false 
         type: boolean
         default: true
-        
+  pull_request:
+
 # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-secrets
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
