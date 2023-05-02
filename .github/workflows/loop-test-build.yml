@@ -15,6 +15,7 @@ env:
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
   build-with-SCCACHE: 'true'
   build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
+  ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
 
 
 on:
@@ -43,6 +44,11 @@ on:
         default: true
       build-Everything:
         description: 'build-Everything'     
+        required: false 
+        type: boolean
+        default: false
+      ryanchapman-gha-ssh:
+        description: 'ryanchapman-gha-ssh'     
         required: false 
         type: boolean
         default: false
