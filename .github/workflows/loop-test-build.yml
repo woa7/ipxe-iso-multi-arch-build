@@ -178,7 +178,7 @@ jobs:
               chmod 755 "./${COMPILER}"
             done
           EOS
-          chmod 755 /usr/lib/sccache/sccache-wrapper
+          sudo chmod 755 /usr/lib/sccache/sccache-wrapper
           sudo /usr/lib/sccache/sccache-wrapper
           ls -latr /usr/lib/sccache/ ||:
 ###          echo "/usr/lib/sccache" >> $GITHUB_PATH
