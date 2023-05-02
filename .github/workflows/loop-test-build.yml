@@ -128,6 +128,12 @@ jobs:
         ### if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           export -p | grep -E "CCACHE|SCCACHE|CC|CXX|PATH"
+      - name: export -p | grep CCACHE SCCACHE CC CXX
+        ### if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          export -p | grep -E "CCACHE|SCCACHE|CC|CXX|PATH"
+          sccache --show-stats ||:
+          ccache --show-stats --verbose ||:
 #        env:
 #          SCCACHE_GHA_ENABLED: "true"
 #          CC: "sccache gcc"
@@ -148,7 +154,36 @@ jobs:
           }
           EOF
           
-      - name: Add sccache warper
+      - name: Add sccache warper1
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
+          echo build-with-SCCACHE
+          # see https://github.com/mozilla/sccache/issues/1155#issuecomment-1097557677
+          sudo mkdir -p /usr/lib/sccache/
+          cat <<EOS | sudo tee /usr/lib/sccache/sccache-wrapper
+          #!/usr/bin/bash
+          SCCACHE_BIN "$(command -v sccache )"
+          $(dirname "$0")
+          for COMPILER in "c++" "c89" "c99" "cc" "clang" "clang++" "cpp" "g++" "gcc" "rustc" "x86_64-pc-linux-gnu-c++" "x86_64-pc-linux-gnu-cc" "x86_64-pc-linux-gnu-g++" "x86_64-pc-linux-gnu-gcc" "arm-none-eabi-c++" "arm-none-eabi-cc" "arm-none-eabi-g++" "arm-none-eabi-gcc" "aarch64-linux-gnu-c++" "aarch64-linux-gnu-cc" "aarch64-linux-gnu-g++" "aarch64-linux-gnu-gcc" "arm-none-eabi-c++" "arm-none-eabi-cc" "arm-none-eabi-g++" "arm-none-eabi-gcc"; do
+            cat > "./${COMPILER}" <<-EOF
+            #!/bin/bash
+            SCCACHE_WRAPPER_BINDIR="\$(dirname \${BASH_SOURCE[0]})"  # Intentionally don't resolve symlinks
+            PATH=\${PATH//":\$SCCACHE_WRAPPER_BINDIR:"/":"} # delete any instances in the middle
+            PATH=\${PATH/#"\$SCCACHE_WRAPPER_BINDIR:"/} # delete any instance at the beginning
+            PATH=\${PATH/%":\$SCCACHE_WRAPPER_BINDIR"/} # delete any instance in the at the end
+            # /usr/bin/sccache ${COMPILER} "\$@"
+            ${SCCACHE_BIN} ${COMPILER} "\$@"
+              EOF
+              chmod 755 "./${COMPILER}"
+            done
+          EOS
+          chmod 755 /usr/lib/sccache/sccache-wrapper
+          sudo /usr/lib/sccache/sccache-wrapper
+          ls -latr /usr/lib/sccache/ ||:
+###          echo "/usr/lib/sccache" >> $GITHUB_PATH
+          
+      - name: Add sccache warper2
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
@@ -167,6 +202,7 @@ jobs:
           chmod 755 /usr/local/bin/CXX
           sccache --start-server ||:
 
+
       - name: install ccache
         if: ${{ env.build-with-CCACHE == 'true' }}
         uses: berlin4apk/ccache-action@dev
@@ -180,7 +216,25 @@ jobs:
           # save: false # If 'false', do not save the cache, only restore. default: true
           # ccache-dir: "~/.ccache"
           # dont-do-config: false
-          
+
+
+      - name: echo PATH
+        run: |
+          echo "$PATH"
+      - name: Add ccache /usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec to GITHUB_PATH
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        run: |
+          echo "/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+      - name: Add ccache /usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec to GITHUB_PATH
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          echo "/usr/local/lib/sccache:/usr/lib/sccache:/usr/local/opt/sccache/libexec" >> $GITHUB_PATH
+      - name: echo PATH
+        run: |
+          echo "$PATH"
+
+
+
 # https://github.com/ipxe/ipxe/discussions/614#discussioncomment-2363937          
 # @mcb30 on Mar 15, 2022
 # The default build will give you a BIOS image. To build an EFI image, you will need to do something like make bin-x86_64-efi/ipxe.iso.
