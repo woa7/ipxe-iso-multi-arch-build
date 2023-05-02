@@ -15,7 +15,8 @@ env:
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
   build-with-SCCACHE: 'true'
   build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
-  ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
+  #ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
+  ryanchapman-gha-ssh: 'false'
 
 
 on:
@@ -74,6 +75,8 @@ jobs:
         run: echo "build-with-SCCACHE=true" >> $GITHUB_OUTPUT
       - if: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
         run: echo "build-Everything=true" >> $GITHUB_OUTPUT
+      - if: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
+        run: echo "ryanchapman-gha-ssh=true" >> $GITHUB_OUTPUT
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -159,7 +162,7 @@ jobs:
         run: |
           [[ -e update-sccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/dev/src/update-sccache-symlinks.sh
           sudo chmod 755 update-sccache-symlinks.sh
-          sudo bash ./update-sccache-symlinks.sh
+          sudo bash update-sccache-symlinks.sh
           # [[ -e update-sccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/v1.2.105/src/update-ccache-symlinks.sh
           # echo "9ba51f7f4983817980c4173282dd09cdba6b5d81d087852831d9ecb69a6cf7ad *update-ccache-symlinks.sh" | sha256sum -c -
 ###          echo "/usr/lib/sccache" >> $GITHUB_PATH
@@ -190,7 +193,7 @@ jobs:
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
-          max-size: 1000M # Max size of the cache, default: 500M
+          max-size: 1000M # Max size of the cache, default: 501M
           compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
           install-from-github: true
           variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
