@@ -322,13 +322,14 @@ jobs:
           isoinfo -l -i src/*.iso
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
       - name: Test
-        continue-on-error: true
+        if: ${{ env.build-Everything == 'true' }}
+        #continue-on-error: true
         run: |
           valgrind ./src/bin-i386-linux/tests.linux
           valgrind ./src/bin-x86_64-linux/tests.linux
 ###
       - name: ssh
-        if: ${{ false }}
+        if: ${{ false && env.ryanchapman-gha-ssh == 'true' }}
         continue-on-error: false
         #if: ${{ failure() }}
         #if: ${{ true() }}
