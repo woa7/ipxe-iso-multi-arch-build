@@ -215,7 +215,7 @@ jobs:
         run: |
           export -p | grep -i -E "CCACHE|SCCACHE|CC|CXX|PATH|MAKE"
           sccache --show-stats ||:
-          ccache --show-stats --verbose ||:
+          ccache  --show-config --show-stats --verbose --verbose ||:
 #        env:
 #          SCCACHE_GHA_ENABLED: "true"
 #          CC: "sccache gcc"
@@ -228,14 +228,21 @@ jobs:
         #  With clang
         #  ./configure CC="sccache clang" CXX="sccache clang"
         
-      - name: build test.c
+      - name: build /tmp/test.c /tmp/test2.c
         run: |
           cat <<EOF > test.c
+          #include <stdio.h>
+          void main() {
+          printf("hello world\n");
+          }
+          EOF
+          cat <<EOF > test2.c
           #include <stdio.h>
           void foo() {
           printf("hello world\n");
           }
           EOF
+
 
 
       - name: Add ccache warper
@@ -298,7 +305,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-stats --verbose
+        run: ccache --show-config --show-stats --verbose --verbose
 
 
       - name: Build (efi)
@@ -318,7 +325,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-stats --verbose
+        run: ccache  --show-config --show-stats --verbose --verbose
 
 
       - name: Install packages arm gcc
@@ -347,7 +354,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-stats --verbose
+        run: ccache  --show-config --show-stats --verbose --verbose
 
 
       - name: Build ARM64
@@ -367,7 +374,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-stats --verbose
+        run: ccache  --show-config --show-stats --verbose --verbose
 
 
       - name: Install for ISO build
@@ -417,7 +424,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-stats --verbose
+        run: ccache  --show-config --show-stats --verbose --verbose
 
 
       - name: Build ISO (Everything)
