@@ -250,6 +250,11 @@ jobs:
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC /tmp/test.c || gcc /tmp/test.c
+          $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
+          $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
+          $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
+
+
 
       - name: Run sccache stat for check
         if: ${{ env.build-with-SCCACHE == 'true' }}
