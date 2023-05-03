@@ -133,10 +133,10 @@ jobs:
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
-          echo "HOST_CC=sccache gcc" >> $GITHUB_ENV
-          echo "CC=sccache gcc" >> $GITHUB_ENV
-          echo "CXX=sccache gcc" >> $GITHUB_ENV
-          echo "MAKEOPTs=HOST_CC=\'sccache gcc\' CC=\'sccache gcc\'" >> $GITHUB_ENV
+          echo "HOST_CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
+          echo "CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
+          echo "CXX=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
+          echo "MAKEOPTs=HOST_CC=\'${SCCACHE_PATH} gcc\' CC=\'${SCCACHE_PATH} gcc\'" >> $GITHUB_ENV
 #          echo "MAKEOPTs=HOST_CC=\"sccache gcc\" CC=\"sccache gcc\"" >> $GITHUB_ENV
           
       - name: ccache For C/C++ code, the following environment variables should be set
