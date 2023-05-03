@@ -184,7 +184,18 @@ jobs:
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           whereis gcc
+          echo "SCCACHE_GHA_VERSION=2" >> $GITHUB_ENV    # By changing SCCACHE_GHA_VERSION, we can purge all the cache. https://github.com/mozilla/sccache/blob/main/docs/GHA.md
           echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
+          # 
+          # SCCACHE_GHA_CACHE_URL / ACTIONS_CACHE_URL GitHub Actions cache API URL
+          # SCCACHE_GHA_RUNTIME_TOKEN / ACTIONS_RUNTIME_TOKEN GitHub Actions access token
+          # SCCACHE_GHA_CACHE_TO cache key to write
+          # SCCACHE_GHA_CACHE_FROM comma separated list of cache keys to read from
+          #
+          ## echo "SCCACHE_DIR=${{ runner.workspace }}/.sccache" >> $GITHUB_ENV
+          ###  By default it will use: ~/.cache/sccache on Linux, %LOCALAPPDATA%\Mozilla\sccache on Windows, and ~/Library/Caches/Mozilla.sccache on MacOS.
+          # echo "SCCACHE_IDLE_TIMEOUT=0" >> $GITHUB_ENV
+          ### SCCACHE_IDLE_TIMEOUT how long the local daemon process waits for more client requests before exiting, in seconds. Set to 0 to run sccache permanently
           echo "HOST_CC=${SCCACHE_PATH} /usr/bin/gcc" >> $GITHUB_ENV
           echo "CC=${SCCACHE_PATH} /usr/bin/gcc" >> $GITHUB_ENV
           echo "CXX=${SCCACHE_PATH} /usr/bin/gcc" >> $GITHUB_ENV
@@ -227,7 +238,8 @@ jobs:
       - name: install ccache
         if: ${{ env.build-with-CCACHE == 'true' }}
         #uses: berlin4apk/ccache-action@dev
-        uses: berlin4apk/ccache-action@v1.2.105
+        #uses: berlin4apk/ccache-action@v1.2.105
+        uses: berlin4apk/ccache-action@add-ccacheDir-to-save.ts
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
