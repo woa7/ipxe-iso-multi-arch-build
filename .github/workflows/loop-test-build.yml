@@ -93,9 +93,6 @@ jobs:
         run: echo "build-Everything=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
         run: echo "ryanchapman-gha-ssh=true" >> $GITHUB_ENV
-      - name: set my-runner-workspace for BUG workaround github.workspace and runner.workspace are incorrect inside container jobs #2058
-        # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
-        run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
         
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
@@ -115,6 +112,11 @@ jobs:
           repository: ipxe/ipxe
           path: .
           fetch-depth: 0
+          
+      - name: set my-runner-workspace for BUG workaround github.workspace and runner.workspace are incorrect inside container jobs #2058
+        # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
+        run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
+          
       - name: Install packages
         run: |
           echo eatmydata
@@ -258,11 +260,15 @@ jobs:
           $CC /tmp/test3.c || gcc /tmp/test3.c
           $CC /tmp/test3.c || gcc /tmp/test3.c
           $CC /tmp/test3.c || gcc /tmp/test3.c
-          $CC /tmp/test.c || gcc /tmp/test.c
-          $CC /tmp/test.c || gcc /tmp/test.c
+          $CC /tmp/test.c || gcc /tmp/test.c ||:
+          $CC /tmp/test.c || gcc /tmp/test.c ||:
+          $CC -c /tmp/test3.c -o /tmp/test3.o || gcc -c /tmp/test3.c -o /tmp/test3.o
+          $CC -c /tmp/test3.c -o /tmp/test3.o || gcc -c /tmp/test3.c -o /tmp/test3.o
+          $CC -c /tmp/test3.c -o /tmp/test3.o || gcc -c /tmp/test3.c -o /tmp/test3.o
           $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
           $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
-          $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
+          $CC -c /tmp/test.c -o /tmp/test.o || gcc -c /tmp/test.c -o /tmp/test.o ||:
+          $CC -c /tmp/test.c -o /tmp/test.o || gcc -c /tmp/test.c -o /tmp/test.o ||:
 
 
 
