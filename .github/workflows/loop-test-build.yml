@@ -241,7 +241,7 @@ jobs:
         #uses: berlin4apk/ccache-action@v1.2.105
         uses: berlin4apk/ccache-action@add-ccacheDir-to-save.ts
         with:
-          key: ${{ matrix.os }}-${{ matrix.type }}
+          key: ${{ runner.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           max-size: 1000M # Max size of the cache, default: 501M
 ###          compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
