@@ -71,7 +71,8 @@ jobs:
         run: echo "clear-docker-cache=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
         run: echo "build-with-CCACHE=true" >> $GITHUB_ENV
-      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+#      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+      - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' || 'true' }}
         run: echo "build-with-SCCACHE=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
         run: echo "build-Everything=true" >> $GITHUB_ENV
