@@ -243,7 +243,18 @@ jobs:
           printf("hello world\n");
           }
           EOF
+          $CC /tmp/test.c || gcc /tmp/test.c
+          $CC /tmp/test.c || gcc /tmp/test.c
+          $CC /tmp/test.c || gcc /tmp/test.c
 
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ${CCACHE_PATH} --show-config --show-stats --verbose --verbose
 
 
       - name: Add ccache warper
