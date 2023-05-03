@@ -93,6 +93,9 @@ jobs:
         run: echo "build-Everything=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
         run: echo "ryanchapman-gha-ssh=true" >> $GITHUB_ENV
+        # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
+        run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
+        
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -196,6 +199,9 @@ jobs:
           variant: ccache # 'Ccache variant to use. Either "ccache" (the default) or "sccache" (see https://github.com/mozilla/sccache)'
           # save: false # If 'false', do not save the cache, only restore. default: true
           # ccache-dir: "~/.ccache"
+          # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
+          ###   run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
+          ccache-dir: "${{ runner.workspace }}/.ccache"
           # dont-do-config: false
 
       - name: ccache For C/C++ code, the following environment variables should be set
