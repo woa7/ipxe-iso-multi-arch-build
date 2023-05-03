@@ -273,7 +273,7 @@ jobs:
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         run: |
           set -vx
-          make HOST_CC=${HOST_CC} CC=${CC} -j $((`nproc`+0)) -C src
+          make HOST_CC="$HOST_CC" CC='$CC' -j $((`nproc`+0)) -C src
       - name: Build (efi)
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         run: |
