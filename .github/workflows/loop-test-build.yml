@@ -136,7 +136,8 @@ jobs:
           echo "HOST_CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CXX=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
-          echo "MAKEOPTs=HOST_CC='${SCCACHE_PATH} gcc' CC='${SCCACHE_PATH} gcc'" >> $GITHUB_ENV
+          echo 'MAKEOPTs="HOST_CC="${SCCACHE_PATH} gcc" CC="${SCCACHE_PATH} gcc"' >> $GITHUB_ENV
+#          echo "MAKEOPTs=HOST_CC='${SCCACHE_PATH} gcc' CC='${SCCACHE_PATH} gcc'" >> $GITHUB_ENV
 #          echo "MAKEOPTs=HOST_CC=\'${SCCACHE_PATH} gcc\' CC=\'${SCCACHE_PATH} gcc\'" >> $GITHUB_ENV
 #          echo "MAKEOPTs=HOST_CC=\"sccache gcc\" CC=\"sccache gcc\"" >> $GITHUB_ENV
           
