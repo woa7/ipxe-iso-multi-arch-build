@@ -246,6 +246,7 @@ jobs:
           printf("hello world\n");
           }
           EOF
+          cp -p test.c test2.c /tmp/
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC /tmp/test.c || gcc /tmp/test.c
