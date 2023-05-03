@@ -260,6 +260,8 @@ jobs:
       - name: echo PATH
         run: |
           echo "$PATH"
+          set -vx
+          ls -latr /opt/hostedtoolcache/sccache/*/*/ ||:
 
 
 
