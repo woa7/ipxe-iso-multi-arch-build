@@ -234,7 +234,7 @@ jobs:
         
       - name: build /tmp/test.c /tmp/test2.c
         run: |
-          cat <<EOF > test.c
+          cat <<EOF > test3.c
           #include <stdio.h>
           void main() {
           printf("hello world\n");
@@ -246,8 +246,11 @@ jobs:
           printf("hello world\n");
           }
           EOF
-          cp -p test.c test2.c /tmp/
-          $CC /tmp/test.c || gcc /tmp/test.c
+          ### sudo rm /tmp/test.c /tmp/test2.c
+          cp -p test3.c test2.c /tmp/
+          $CC /tmp/test3.c || gcc /tmp/test3.c
+          $CC /tmp/test3.c || gcc /tmp/test3.c
+          $CC /tmp/test3.c || gcc /tmp/test3.c
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC /tmp/test.c || gcc /tmp/test.c
           $CC -c /tmp/test2.c -o /tmp/test2.o || gcc -c /tmp/test2.c -o /tmp/test2.o
