@@ -13,7 +13,7 @@ env:
 #  build-with-CCACHE: 'false'
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }} || 'true'
   build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
   #ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
   ryanchapman-gha-ssh: 'false'
