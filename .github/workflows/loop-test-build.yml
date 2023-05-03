@@ -136,7 +136,8 @@ jobs:
           echo "HOST_CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CC=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CXX=${SCCACHE_PATH} gcc" >> $GITHUB_ENV
-          echo "MAKEOPTs=HOST_CC=\'${SCCACHE_PATH} gcc\' CC=\'${SCCACHE_PATH} gcc\'" >> $GITHUB_ENV
+          echo "MAKEOPTs=HOST_CC='${SCCACHE_PATH} gcc' CC='${SCCACHE_PATH} gcc'" >> $GITHUB_ENV
+#          echo "MAKEOPTs=HOST_CC=\'${SCCACHE_PATH} gcc\' CC=\'${SCCACHE_PATH} gcc\'" >> $GITHUB_ENV
 #          echo "MAKEOPTs=HOST_CC=\"sccache gcc\" CC=\"sccache gcc\"" >> $GITHUB_ENV
           
       - name: ccache For C/C++ code, the following environment variables should be set
@@ -269,6 +270,7 @@ jobs:
       - name: Build (BIOS)
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         run: |
+          set -vx
           make $MAKEOPTs -j $((`nproc`+0)) -C src
       - name: Build (efi)
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
