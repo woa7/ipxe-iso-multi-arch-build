@@ -13,7 +13,7 @@ env:
 #  build-with-CCACHE: 'false'
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
 #  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-  build-with-SCCACHE: 'true'
+  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
   build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
   #ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
   ryanchapman-gha-ssh: 'false'
@@ -39,7 +39,7 @@ on:
         type: boolean
         default: false
       build-with-SCCACHE:
-        description: 'SCCACHE build'     
+        description: 'SCCACHE build-with-SCCACHE'     
         required: false 
         type: boolean
         default: true
@@ -68,15 +68,15 @@ jobs:
     steps:
       # FIXME BUG see https://github.com/actions/runner/issues/1483
       - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-        run: echo "clear-docker-cache=true" >> $GITHUB_OUTPUT
+        run: echo "clear-docker-cache=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-        run: echo "build-with-CCACHE=true" >> $GITHUB_OUTPUT
+        run: echo "build-with-CCACHE=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-        run: echo "build-with-SCCACHE=true" >> $GITHUB_OUTPUT
+        run: echo "build-with-SCCACHE=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
-        run: echo "build-Everything=true" >> $GITHUB_OUTPUT
+        run: echo "build-Everything=true" >> $GITHUB_ENV
       - if: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
-        run: echo "ryanchapman-gha-ssh=true" >> $GITHUB_OUTPUT
+        run: echo "ryanchapman-gha-ssh=true" >> $GITHUB_ENV
 #    
 #    - if: ${{ github.event.inputs.OPT_REBUILD && github.event.inputs.OPT_REBUILD != 'false' }}
 #      run: echo "OPT_REBUILD=1" >> $GITHUB_OUTPUT
@@ -124,7 +124,7 @@ jobs:
       - name: For C/C++ code, the following environment variables should be set
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_OUTPUT
+          echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
           echo "CC=sccache gcc" >> $GITHUB_OUTPUT
           echo "CXX=sccache gcc" >> $GITHUB_OUTPUT
       - name: export -p | grep CCACHE SCCACHE CC CXX
@@ -168,7 +168,7 @@ jobs:
 ###          echo "/usr/lib/sccache" >> $GITHUB_PATH
           
       - name: Add sccache warper2
-        if: ${{ env.build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-SCCACHEdisabeld == 'true' }}
         run: |
           # By default, sccache will fail your build if it fails to successfully communicate with its associated server. To have sccache instead gracefully failover to the local compiler without stopping, set the environment variable SCCACHE_IGNORE_SERVER_IO_ERROR=1.
           echo build-with-SCCACHE
@@ -234,7 +234,7 @@ jobs:
           
       - name: Build (BIOS)
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+0)) -C src
       - name: Install packages arm gcc
         run: |
@@ -246,14 +246,14 @@ jobs:
                            g++-9-aarch64-linux-gnu
       - name: Build ARM32
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
                bin-arm32-efi/intel.efi \
                bin-arm32-efi/intel.usb \
                bin-arm32-efi/intel.iso
       - name: Build ARM64
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j $((`nproc`+0)) -C src CROSS=aarch64-linux-gnu- \
                bin-arm64-efi/ipxe.efi \
                bin-arm64-efi/ipxe.usb \
@@ -266,7 +266,7 @@ jobs:
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: Build ISO
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
@@ -284,12 +284,12 @@ jobs:
       - name: Build (Everything)
         if: ${{ env.build-Everything == 'true' }}
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           make -j$((`nproc`+0)) -C src everything
       - name: Build ISO (Everything)
         if: ${{ env.build-Everything == 'true' }}
         run: |
-          export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           find . \( -name ipxe.lkrn -or -name ipxe.efi \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
