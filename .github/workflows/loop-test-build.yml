@@ -289,6 +289,18 @@ jobs:
         run: |
           set -vx
           make HOST_CC="$HOST_CC" CC="$CC" -j $((`nproc`+0)) -C src
+
+
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ccache --show-stats --verbose
+
+
       - name: Build (efi)
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         run: |
@@ -297,6 +309,18 @@ jobs:
                bin-i386-efi/ipxe.efi \
                bin-x86_64-efi/ipxe.efi \
                bin/ipxe.lkrn
+
+
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ccache --show-stats --verbose
+
+
       - name: Install packages arm gcc
         if: ${{ env.build-ARM == 'true' }}
         run: |
@@ -314,6 +338,18 @@ jobs:
                bin-arm32-efi/intel.efi \
                bin-arm32-efi/intel.usb \
                bin-arm32-efi/intel.iso
+
+
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ccache --show-stats --verbose
+
+
       - name: Build ARM64
         if: ${{ env.build-ARM == 'true' }}
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
@@ -322,6 +358,17 @@ jobs:
                bin-arm64-efi/ipxe.efi \
                bin-arm64-efi/ipxe.usb \
                bin-arm64-efi/ipxe.iso
+
+
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ccache --show-stats --verbose
+
 
       - name: Install for ISO build
         run: |
@@ -361,6 +408,18 @@ jobs:
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
         run: |
           make -j$((`nproc`+0)) -C src everything
+
+
+      - name: Run sccache stat for check
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        shell: bash
+        run: ${SCCACHE_PATH} --show-stats
+      - name: Run ccache stat for check
+        if: ${{ env.build-with-CCACHE == 'true' }}
+        shell: bash
+        run: ccache --show-stats --verbose
+
+
       - name: Build ISO (Everything)
         if: ${{ env.build-Everything == 'true' }}
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
