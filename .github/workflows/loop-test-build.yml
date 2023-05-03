@@ -189,7 +189,8 @@ jobs:
 
       - name: install ccache
         if: ${{ env.build-with-CCACHE == 'true' }}
-        uses: berlin4apk/ccache-action@dev
+        #uses: berlin4apk/ccache-action@dev
+        uses: berlin4apk/ccache-action@v1.2.107
         with:
           key: ${{ matrix.os }}-${{ matrix.type }}
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
