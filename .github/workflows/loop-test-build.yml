@@ -35,22 +35,22 @@ on:
         type: boolean
       build-with-CCACHE:
         description: 'build with build-with-CCACHE'     
-        required: false 
+        required: true 
         type: boolean
         default: false
       build-with-SCCACHE:
         description: 'SCCACHE build-with-SCCACHE'     
-        required: false 
+        required: true 
         type: boolean
         default: true
       build-Everything:
         description: 'build-Everything'     
-        required: false 
+        required: true 
         type: boolean
         default: false
       ryanchapman-gha-ssh:
         description: 'ryanchapman-gha-ssh'     
-        required: false 
+        required: true 
         type: boolean
         default: false
   pull_request:
@@ -130,7 +130,7 @@ jobs:
           echo "CXX=sccache gcc" >> $GITHUB_ENV
           
       - name: ccache For C/C++ code, the following environment variables should be set
-        if: ${{ env.build-with-SCCACHE == 'true' }}
+        if: ${{ env.build-with-CCACHE == 'true' }}
         run: |
           echo "HOST_CC=ccache gcc" >> $GITHUB_ENV
           echo "CC=ccache gcc" >> $GITHUB_ENV
