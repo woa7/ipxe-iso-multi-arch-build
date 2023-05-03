@@ -121,12 +121,21 @@ jobs:
         shell: bash
         run: ${SCCACHE_PATH} --show-stats
 
-      - name: For C/C++ code, the following environment variables should be set
+      - name: sccache For C/C++ code, the following environment variables should be set
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
-          ###echo "CC=sccache gcc" >> $GITHUB_OUTPUT
-          ###echo "CXX=sccache gcc" >> $GITHUB_OUTPUT
+          echo "HOST_CC=sccache gcc" >> $GITHUB_ENV
+          echo "CC=sccache gcc" >> $GITHUB_ENV
+          echo "CXX=sccache gcc" >> $GITHUB_ENV
+          
+      - name: ccache For C/C++ code, the following environment variables should be set
+        if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          echo "HOST_CC=ccache gcc" >> $GITHUB_ENV
+          echo "CC=ccache gcc" >> $GITHUB_ENV
+          echo "CXX=ccache gcc" >> $GITHUB_ENV
+          
       - name: export -p | grep -i CCACHE SCCACHE CC CXX
         ### if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
