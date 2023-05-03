@@ -125,16 +125,16 @@ jobs:
         if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
           echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
-          echo "CC=sccache gcc" >> $GITHUB_OUTPUT
-          echo "CXX=sccache gcc" >> $GITHUB_OUTPUT
+          ###echo "CC=sccache gcc" >> $GITHUB_OUTPUT
+          ###echo "CXX=sccache gcc" >> $GITHUB_OUTPUT
+      - name: export -p | grep -i CCACHE SCCACHE CC CXX
+        ### if: ${{ env.build-with-SCCACHE == 'true' }}
+        run: |
+          export -p | grep -i -E "CCACHE|SCCACHE|CC|CXX|PATH"
       - name: export -p | grep CCACHE SCCACHE CC CXX
         ### if: ${{ env.build-with-SCCACHE == 'true' }}
         run: |
-          export -p | grep -E "CCACHE|SCCACHE|CC|CXX|PATH"
-      - name: export -p | grep CCACHE SCCACHE CC CXX
-        ### if: ${{ env.build-with-SCCACHE == 'true' }}
-        run: |
-          export -p | grep -E "CCACHE|SCCACHE|CC|CXX|PATH"
+          export -p | grep -i -E "CCACHE|SCCACHE|CC|CXX|PATH"
           sccache --show-stats ||:
           ccache --show-stats --verbose ||:
 #        env:
@@ -233,8 +233,8 @@ jobs:
 # The Makefile does not currently support building this combined ISO in one step as a single target, since it involves compiling for multiple CPU architectures.
           
       - name: Build (BIOS)
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           make -j $((`nproc`+0)) -C src
       - name: Install packages arm gcc
         run: |
@@ -245,15 +245,15 @@ jobs:
                            gcc-aarch64-linux-gnu \
                            g++-9-aarch64-linux-gnu
       - name: Build ARM32
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           make -j $((`nproc`+0)) -C src CROSS=arm-none-eabi- \
                bin-arm32-efi/intel.efi \
                bin-arm32-efi/intel.usb \
                bin-arm32-efi/intel.iso
       - name: Build ARM64
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           make -j $((`nproc`+0)) -C src CROSS=aarch64-linux-gnu- \
                bin-arm64-efi/ipxe.efi \
                bin-arm64-efi/ipxe.usb \
@@ -265,8 +265,8 @@ jobs:
                            mtools syslinux isolinux \
                            p7zip-full genisoimage mtools isolinux syslinux syslinux-efi syslinux-utils xorriso
       - name: Build ISO
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           find . \( -name "*.lkrn" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
@@ -283,13 +283,13 @@ jobs:
           find . \( -name "*.lkrn" -or -name "*.lkr" -or -name "*.efi" -or -name "*.iso" \) \( ! -name "Makefile*" \) -exec 7z l '{}' ';'
       - name: Build (Everything)
         if: ${{ env.build-Everything == 'true' }}
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           make -j$((`nproc`+0)) -C src everything
       - name: Build ISO (Everything)
         if: ${{ env.build-Everything == 'true' }}
-        run: |
           #export PATH="/usr/local/lib/ccache:/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        run: |
           find . \( -name ipxe.lkrn -or -name ipxe.efi \) -print
           cd src && ./util/genfsimg -o ipxe-all-arch.iso -s menu.ipxe \
           bin-i386-efi/ipxe.efi \
