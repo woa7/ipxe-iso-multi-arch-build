@@ -67,9 +67,35 @@ permissions:
   contents: read
 
 jobs:
+
+  cache:
+    name: Cache
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Cache permissions
+        run: |
+          sudo chown $(id -un) /var/cache/apt/archives
+      - name: Cache packages
+        uses: actions/cache@v3
+        with:
+          path: /var/cache/apt/archives/*.deb
+          key: apt-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            apt-cache-
+      - name: Download packages
+        run: |
+          sudo apt update
+          sudo apt install -y -d -o Acquire::Retries=50 \
+                           mtools syslinux isolinux \
+                           libc6-dev-i386 valgrind \
+                           gcc-arm-none-eabi gcc-aarch64-linux-gnu \
+                           p7zip-full genisoimage syslinux-efi syslinux-utils xorriso
+
+
   x86:
     name: x86-loop-test
     runs-on: ubuntu-20.04
+    needs: cache
     steps:
       # FIXME BUG see https://github.com/actions/runner/issues/1483
       - if: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
@@ -116,6 +142,15 @@ jobs:
       - name: set my-runner-workspace for BUG workaround github.workspace and runner.workspace are incorrect inside container jobs #2058
         # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
         run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
+          
+      - name: Cache permissions
+        run: |
+          sudo chown $(id -un) /var/cache/apt/archives
+      - name: Cache packages
+        uses: actions/cache/restore@v3
+        with:
+          path: /var/cache/apt/archives/*.deb
+          key: apt-cache-${{ github.run_id }}-${{ github.run_attempt }}
           
       - name: Install packages
         run: |
