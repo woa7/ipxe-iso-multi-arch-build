@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /var/cache/apt/archives/*.deb
-          key: apt-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          key: apt-cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ hashFiles('/var/cache/apt/archives/*.deb') }}
           restore-keys: |
             apt-cache-
       - name: Download packages
