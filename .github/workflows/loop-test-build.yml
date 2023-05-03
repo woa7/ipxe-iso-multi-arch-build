@@ -201,6 +201,7 @@ jobs:
         if: ${{ env.build-with-CCACHE == 'true' }}
         run: |
           CCACHE_PATH=$(command -v ccache)
+          echo "CCACHE_PATH=${CCACHE_PATH}" >> $GITHUB_ENV
           echo "HOST_CC=${CCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CC=${CCACHE_PATH} gcc" >> $GITHUB_ENV
           echo "CXX=${CCACHE_PATH} gcc" >> $GITHUB_ENV
@@ -305,7 +306,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache --show-config --show-stats --verbose --verbose
+        run: ${CCACHE_PATH} --show-config --show-stats --verbose --verbose
 
 
       - name: Build (efi)
@@ -325,7 +326,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache  --show-config --show-stats --verbose --verbose
+        run: ${CCACHE_PATH}  --show-config --show-stats --verbose --verbose
 
 
       - name: Install packages arm gcc
@@ -354,7 +355,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache  --show-config --show-stats --verbose --verbose
+        run: ${CCACHE_PATH}  --show-config --show-stats --verbose --verbose
 
 
       - name: Build ARM64
@@ -374,7 +375,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache  --show-config --show-stats --verbose --verbose
+        run: ${CCACHE_PATH}  --show-config --show-stats --verbose --verbose
 
 
       - name: Install for ISO build
@@ -424,7 +425,7 @@ jobs:
       - name: Run ccache stat for check
         if: ${{ env.build-with-CCACHE == 'true' }}
         shell: bash
-        run: ccache  --show-config --show-stats --verbose --verbose
+        run: ${CCACHE_PATH}  --show-config --show-stats --verbose --verbose
 
 
       - name: Build ISO (Everything)
