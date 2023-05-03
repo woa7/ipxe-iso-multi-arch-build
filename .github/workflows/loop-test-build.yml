@@ -208,7 +208,7 @@ jobs:
           [[ -e update-ccache-symlinks.in ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/dev/third-party/debian-ccache/debian/update-ccache-symlinks.in
           [[ -e update-ccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/dev/src/update-ccache-symlinks.sh
           sudo chmod 755 update-ccache-symlinks.sh
-          sudo bash +e update-ccache-symlinks.sh ; echo $?
+          sudo bash +e update-ccache-symlinks.sh ||: ; echo $?
           # [[ -e update-sccache-symlinks.sh ]] || curl -LORJ https://github.com/berlin4apk/ccache-action/raw/v1.2.105/src/update-ccache-symlinks.sh
           # echo "9ba51f7f4983817980c4173282dd09cdba6b5d81d087852831d9ecb69a6cf7ad *update-ccache-symlinks.sh" | sha256sum -c -
 ###          echo "/usr/lib/sccache" >> $GITHUB_PATH
