@@ -2,21 +2,21 @@
 name: loop-test-build
 
 
-#env:
-## settings DEFAULTS
-##  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache }}
-###  clear-docker-cache: ${{ inputs.backport_release == false && inputs.release_candidate == false }}
-#  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
-##  clear-docker-cache: 'false'
-##  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE }}
-#  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
-##  build-with-CCACHE: 'false'
-##  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
-##  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
-#  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' || 'true' }}
-#  build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
-#  #ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
-#  ryanchapman-gha-ssh: 'false'
+env:
+# settings DEFAULTS
+#  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache }}
+##  clear-docker-cache: ${{ inputs.backport_release == false && inputs.release_candidate == false }}
+  clear-docker-cache: ${{ github.event.inputs.clear-docker-cache && github.event.inputs.clear-docker-cache != 'false' }}
+#  clear-docker-cache: 'false'
+#  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE }}
+  build-with-CCACHE: ${{ github.event.inputs.build-with-CCACHE && github.event.inputs.build-with-CCACHE != 'false' }}
+#  build-with-CCACHE: 'false'
+#  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE }}
+#  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' }}
+  build-with-SCCACHE: ${{ github.event.inputs.build-with-SCCACHE && github.event.inputs.build-with-SCCACHE != 'false' || 'true' }}
+  build-Everything: ${{ github.event.inputs.build-Everything && github.event.inputs.build-Everything != 'false' }}
+  #ryanchapman-gha-ssh: ${{ github.event.inputs.ryanchapman-gha-ssh && github.event.inputs.ryanchapman-gha-ssh != 'false' }}
+  ryanchapman-gha-ssh: 'false'
 
 
 on:
