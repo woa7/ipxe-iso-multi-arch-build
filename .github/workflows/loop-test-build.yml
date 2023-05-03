@@ -136,7 +136,7 @@ jobs:
           echo "HOST_CC=sccache gcc" >> $GITHUB_ENV
           echo "CC=sccache gcc" >> $GITHUB_ENV
           echo "CXX=sccache gcc" >> $GITHUB_ENV
-          echo "MAKEOPTs=HOST_CC='sccache gcc' CC='sccache gcc'" >> $GITHUB_ENV
+          echo "MAKEOPTs=HOST_CC=\'sccache gcc\' CC=\'sccache gcc\'" >> $GITHUB_ENV
 #          echo "MAKEOPTs=HOST_CC=\"sccache gcc\" CC=\"sccache gcc\"" >> $GITHUB_ENV
           
       - name: ccache For C/C++ code, the following environment variables should be set
