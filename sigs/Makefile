@@ -1,3 +1,14 @@
+# https://github.com/openssl/openssl/blob/010333be5362a07508888124c83efac35b28760f/test/recipes/80-test_cms.t#L999-L1015
+# https://github.com/openssl/openssl/pull/15348
+# https://github.com/openssl/openssl/commit/07342bad1bf850657e1a1f21188ee9a8a75e3a19
+# https://github.com/openssl/openssl/blob/010333be5362a07508888124c83efac35b28760f/apps/cms.c#L109
+# # Pre-computed SHA256 digest of $smcont in hexadecimal form
+# git clone https://github.com/openssl/openssl openssl-master-2023-05-04
+# cd openssl-master-2023-05-04
+# ./config --static -static --no-shared -s
+# make
+# 
+
 SIGN=openssl cms -sign -binary -noattr -signer ~/sal/codesign/codesign.crt -inkey ~/sal/codesign/codesign.key -certfile ~/sal/codesign/cacert.pem -outform DER
 
 FTP=/home/ftp/pub
@@ -73,7 +84,8 @@ SOURCES=\
 
 TARGETS=$(SOURCES:=.sig)
 
-all:	$(TARGETS)
+## ORG ## all:	$(TARGETS)
+all:
 
 clean:
 	rm -f $(TARGETS)

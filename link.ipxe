@@ -7,11 +7,12 @@ set c_green ${term_color:string}32m
 set c_blue ${term_color:string}34m
 set c_reset ${esc:string}[0m
 echo ${c_reset}
-echo ${c_green}boot.salstar.sk${c_reset} - ${c_red}SAL's ${c_blue}boot menu${c_reset}
+echo ${c_green}boot${c_reset} - ${c_red}woa7's ${c_blue}boot menu${c_reset}
 echo ${c_reset}
 
 :start
-set boot_salstar_version 1
+#set boot_salstar_version 1
+set boot_woa7_version 1
 
 :link_retry
 # try 2-times
@@ -19,14 +20,18 @@ iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf || ifconf || goto link_menu
 
 :boot
-set base https://boot.salstar.sk/
-set base_ip http://158.197.16.66/boot/
+# FIXME # set base https://boot.salstar.sk/
+# FIXME # set base_ip http://158.197.16.66/boot/
+#set base https://woa7.github.io/boot/
+#set base https://woa7.github.io/ipxe/
+set base https://${next-server}/boot/
+set base_ip http://${next-server}/boot/
 
 # show address
 echo IP: ${ip}, netmask: ${netmask}, gateway: ${gateway}
 
 # try to sync date
-ntp ntp.salstar.sk ||
+ntp ${next-server} || ntp ntp.salstar.sk || ntp 0.openwrt.pool.ntp.org ||
 
 :boot_chain
 # allow loading of custom script set via DHCP server
@@ -44,6 +49,7 @@ item --key l exit Boot local hdd [l]
 item --key n network Manual network configuration [n]
 item --key v vlan Configure VLANs [v]
 item --key c chain Chainload another iPXE [c]
+item --key c chain_boot.salstar.sk Chainload boot.salstar.sk iPXE [C]
 item --key r retry Retry [r]
 item --key 4 retry4 Retry using IPv4 protocol only [4]
 item --key b reboot Reboot [b]
@@ -118,7 +124,19 @@ goto start
 :link_chain
 iflinkwait --timeout=60000 || echo Link wait failed!
 ifconf
-chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
+chain https://${next-server}/ipxe/ipxe.lkrn || chain http://${next-server}/ipxe/ipxe.lkrn || chain chain ${next-server}/ipxe/ipxe.lkrn && exit ||
+goto link_menu
+
+:link_chain_woa7.github.io
+iflinkwait --timeout=60000 || echo Link wait failed!
+ifconf
+chain https://woa7.github.io/ipxe/ipxe.lkrn || chain http://woa7.github.io/ipxe/ipxe.lkrn && exit ||
+goto link_menu
+
+:link_chain_boot.salstar.sk
+iflinkwait --timeout=60000 || echo Link wait failed!
+ifconf
+chain https://boot.salstar.sk/ipxe/ipxe.lkrn || chain http://boot.salstar.sk/ipxe/ipxe.lkrn && exit ||
 goto link_menu
 
 :link_reboot_warm
@@ -133,7 +151,7 @@ chain --autofree --replace ${base_ip}menu.ipxe ||
 exit
 
 :tftp
-set next-server 158.197.16.70
+## FIXME ## set next-server 158.197.16.70
 clear base
 echo Trying to boot from tftp server at ${next-server} ...
 goto boot_chain
