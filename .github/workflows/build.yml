@@ -63,7 +63,12 @@ jobs:
       - name: install ccache
         uses: berlin4apk/ccache-action@v1.3.2-DevTest2
         with:
-          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          key: ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          restore-keys: |
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-
+            ccache-${{ github.job }}-${{ runner.os }}-
+            ccache-${{ github.job }}-
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           max-size: 1000M # Max size of the cache, default: 500M
           compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
@@ -104,9 +109,14 @@ jobs:
                            mtools syslinux isolinux gcc-arm-none-eabi
 
       - name: install ccache
-        uses: berlin4apk/ccache-action@dev
+        uses: berlin4apk/ccache-action@v1.3.2-DevTest2
         with:
-          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          key: ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          restore-keys: |
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-
+            ccache-${{ github.job }}-${{ runner.os }}-
+            ccache-${{ github.job }}-
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           max-size: 1000M # Max size of the cache, default: 500M
           compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
@@ -142,9 +152,14 @@ jobs:
                            mtools syslinux isolinux gcc-aarch64-linux-gnu
 
       - name: install ccache
-        uses: berlin4apk/ccache-action@dev
+        uses: berlin4apk/ccache-action@v1.3.2-DevTest2
         with:
-          key: ${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          key: ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+          restore-keys: |
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.type }}
+            ccache-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-
+            ccache-${{ github.job }}-${{ runner.os }}-
+            ccache-${{ github.job }}-
           verbose: 2 # "Verbosity level: 0 (default), 1 or 2. Ignore for sccache."
           max-size: 1000M # Max size of the cache, default: 500M
           compression-level: 0 # ccache compression-level, ccache 3.7.7 uses gzip: a Normal value is 6 (0-9),  ccache 3.7.7 uses zstd:  a Normal value is 0 (-5-19) see https://ccache.dev/manual/4.6.html#config_compression_level
