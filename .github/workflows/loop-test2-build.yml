@@ -163,7 +163,7 @@ jobs:
           echo "date=$(/bin/date -u "+%Y%m%d_%H%M%S")" >> $GITHUB_OUTPUT
           #echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
         shell: bash
-      - uses: actions/cache/restore@v3.2.3
+      - uses: actions/cache/restore@v3.3.1
         if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
         id: cache-apt-restore
         with:
@@ -415,7 +415,7 @@ jobs:
 #          valgrind ./src/bin-i386-linux/tests.linux
 #          valgrind ./src/bin-x86_64-linux/tests.linux
 
-      - uses: actions/cache/save@v3.2.3
+      - uses: actions/cache/save@v3.3.1
         ###id: cache-apt-save
         if: ${{ github.event.inputs.no-cache-save-apt != 'true' }}
         ###if: always() # or any other condition to invoke the save action
