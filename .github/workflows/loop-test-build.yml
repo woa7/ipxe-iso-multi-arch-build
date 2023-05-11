@@ -252,7 +252,7 @@ jobs:
           # ccache-dir: "~/.ccache"
           # BUG:  github.workspace and runner.workspace are incorrect inside container jobs #2058  /  see https://github.com/actions/runner/issues/2058
           ###   run: echo "my-runner-workspace=${{ runner.workspace }}" >> $GITHUB_ENV
-          ccache-dir: "${{ runner.workspace }}/.ccache"
+          #ccache-dir: "${{ runner.workspace }}/.ccache"
           # dont-do-config: false
 
       - name: ccache For C/C++ code, the following environment variables should be set
