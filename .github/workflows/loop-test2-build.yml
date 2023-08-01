@@ -140,7 +140,7 @@ jobs:
           fetch-depth: 0
 
       #- uses: abbbi/github-actions-tune@v1
-      - uses: abbbi/github-actions-tune@6159a776ffb652135ee2386263da85dfd0b89794
+      - uses: abbbi/github-actions-tune@81fb919e588c20b7ab52b2cac097d2efd765c714
 
       - name: link eatmydata to make
         run: |
